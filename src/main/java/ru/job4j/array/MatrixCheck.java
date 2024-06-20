@@ -24,8 +24,8 @@ public class MatrixCheck {
      * Метод проверяет то, что колонка в двухмерном массиве целиком заполнена символом 'X'.
      * При этом в массиве могут содержаться только символ пробела ' ' и X - 'X'.
      *
-     * @param board  массив
-     * @param column колонка
+     * @param board  массив.
+     * @param column колонка.
      * @return true - если колонка заполнена Х.
      */
     public static boolean monoVertical(char[][] board, int column) {
@@ -35,6 +35,20 @@ public class MatrixCheck {
                 result = false;
                 break;
             }
+        }
+        return result;
+    }
+
+    /**
+     * Заполняет одномерный массив элементами диагонали из двухмерного массива.
+     *
+     * @param board массив.
+     * @return заполненный массив.
+     */
+    public static char[] extractDiagonal(char[][] board) {
+        char[] result = new char[board.length];
+        for (int i = 0; i < board.length; i++) {
+            result[i] = board[i][i];
         }
         return result;
     }
