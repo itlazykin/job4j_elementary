@@ -10,7 +10,7 @@ class PointTest {
         double expected = 2;
         Point a = new Point(0, 2);
         Point b = new Point(0, 0);
-        double output = a.distance(b);
+        double output = a.distance2d(b);
         assertThat(output).isEqualTo(expected, withPrecision(0.01));
     }
 
@@ -19,7 +19,7 @@ class PointTest {
         double expected = 2;
         Point a = new Point(0, 2);
         Point b = new Point(0, 4);
-        double output = a.distance(b);
+        double output = a.distance2d(b);
         assertThat(output).isEqualTo(expected, withPrecision(0.01));
     }
 
@@ -28,7 +28,7 @@ class PointTest {
         double expected = 3.16;
         Point a = new Point(-5, -4);
         Point b = new Point(-8, -3);
-        double output = a.distance(b);
+        double output = a.distance2d(b);
         assertThat(output).isEqualTo(expected, withPrecision(0.01));
     }
 
@@ -37,7 +37,16 @@ class PointTest {
         double expected = 0;
         Point a = new Point(0, 0);
         Point b = new Point(0, 0);
-        double output = a.distance(b);
+        double output = a.distance2d(b);
+        assertThat(output).isEqualTo(expected, withPrecision(0.01));
+    }
+
+    @Test
+    void when123To456Then() {
+        Point a = new Point(1, 2, 3);
+        Point b = new Point(4, 5, 6);
+        double output = a.distance3d(b);
+        double expected = 5.19;
         assertThat(output).isEqualTo(expected, withPrecision(0.01));
     }
 }
