@@ -1,5 +1,10 @@
-SELECT 
-	title,
-	author
+SELECT
+	author,
+	title
 FROM book
-WHERE (price BETWEEN 540.50 AND 800) AND (amount = 2 OR amount = 3 OR amount = 5 OR amount = 7)	
+WHERE amount BETWEEN 2 AND 14
+/*
+Информацию  сортируем сначала по авторам (в обратном алфавитном порядке), а затем по названиям книг (по алфавиту).
+*/
+ORDER BY author DESC, title ASC
+
