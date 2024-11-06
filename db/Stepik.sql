@@ -1,2 +1,2 @@
-DELETE FROM book
-WHERE book_id = 5;
+SELECT DISTINCT amount
+FROM book;
