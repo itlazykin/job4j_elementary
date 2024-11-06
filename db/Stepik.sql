@@ -1,2 +1,4 @@
-SELECT title AS Название, author AS Автор
-FROM book
+SELECT title, amount, 
+1.65 * amount 
+AS pack
+FROM book;
