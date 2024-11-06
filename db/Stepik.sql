@@ -1,4 +1,6 @@
-SELECT title, amount, 
-1.65 * amount 
-AS pack
+SELECT 
+	title,
+	author,
+	amount,
+	ROUND (price * 0.7, 2) AS new_price
 FROM book;
