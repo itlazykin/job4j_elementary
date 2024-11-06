@@ -1,6 +1,7 @@
-SELECT 
-	author,
+SELECT 	
 	title,
-	price
+	author,
+	price,
+	amount
 FROM book
-WHERE amount < 10
+WHERE (price < 500 OR price > 600) AND ((amount * price) >= 5000)
