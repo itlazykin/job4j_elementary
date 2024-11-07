@@ -1,8 +1,5 @@
-SELECT 
-	author, 
-	ROUND(SUM(price * amount), 2) AS Стоимость,
-	ROUND(SUM(price * amount) * 18 /118, 2) AS НДС, 
-	ROUND(SUM(price * amount) / 1.18, 2) AS Стоимость_без_НДС
+SELECT
+	MIN(price) AS Минимальная_цена,
+	MAX(price) AS Максимальная_цена,
+	ROUND(AVG(price), 2) AS Средняя_цена
 FROM book
-GROUP BY author
-ORDER BY author ASC
