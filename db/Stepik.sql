@@ -1,8 +1,7 @@
-SELECT 
-	author,
-	SUM(amount * price) AS Стоимость
+SELECT author, title, price
 FROM book
-WHERE title NOT IN ('Идиот', 'Белая гвардия')
-GROUP BY author
-HAVING SUM(price * amount) > 5000
-ORDER BY author DESC
+WHERE price <= (
+		SELECT AVG(price)
+		FROM book
+)
+ORDER BY price DESC
