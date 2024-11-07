@@ -1,8 +1,7 @@
-SELECT author, title, amount
+SELECT author, title, price
 FROM book
-WHERE amount IN (
-		SELECT amount 
+WHERE price < ALL (
+		SELECT MAX(price)
 		FROM book
-		GROUP BY amount
-		HAVING COUNT(amount) = 1
+		GROUP BY author
 );
