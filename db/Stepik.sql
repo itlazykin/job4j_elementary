@@ -1,5 +1,8 @@
-SELECT 
-	author, title, price
-From book
-WHERE ABS(price - (SELECT MIN(price) FROM book)) <= 150
-ORDER BY price ASC
+SELECT author, title, amount
+FROM book
+WHERE amount IN (
+		SELECT amount 
+		FROM book
+		GROUP BY amount
+		HAVING COUNT(amount) = 1
+);
