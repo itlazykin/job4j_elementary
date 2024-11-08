@@ -1,9 +1,9 @@
-DELETE FROM supply
-WHERE author IN (
-    SELECT book.author
-    FROM book
-    GROUP BY book.author
-    HAVING SUM(book.amount) > 10
-);
+CREATE TABLE ordering AS
+SELECT author, title,
+    (SELECT ROUND(AVG(amount)) 
+	FROM book
+	) AS amount
+FROM book
+WHERE amount < (SELECT AVG(amount) FROM book);
 
-SELECT * FROM s;
+SELECT * FROM ordering;
