@@ -1,7 +1,9 @@
-UPDATE book, supply
-SET book.amount = book.amount + supply.amount,
-    book.price = (book.price + supply.price) / 2
-WHERE book.title = supply.title AND book.author = supply.author;
+DELETE FROM supply
+WHERE author IN (
+    SELECT book.author
+    FROM book
+    GROUP BY book.author
+    HAVING SUM(book.amount) > 10
+);
 
-SELECT * FROM book
-ORDER BY author ASC
+SELECT * FROM s;
