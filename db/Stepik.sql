@@ -1,8 +1,7 @@
-INSERT INTO supply 
-	(title, author, price, amount)
-VALUES
-	('Лирика', 'Пастернак Б.Л.',518.99 ,2),
-	('Черный человек', 'Есенин С.А.',570.20 ,6),
-	('Белая гвардия', 'Булгаков М.А.',540.50 ,7),
-	('Идиот', 'Достоевский Ф.М.',360.80 ,3);
-SELECT * FROM supply
+INSERT INTO book (title, author, price, amount) 
+SELECT title, author, price, amount 
+FROM supply;
+
+DELETE FROM book
+WHERE book_id IN (8, 9);    -- удаляем дубли из таблицы.
+SELECT * FROM book;
