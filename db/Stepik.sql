@@ -1,7 +1,9 @@
-INSERT INTO book (title, author, price, amount) 
-SELECT title, author, price, amount 
-FROM supply;
+INSERT INTO book (title, author, price, amount)
+SELECT title, author, price, amount
+FROM supply
+WHERE author NOT IN (
+	SELECT author
+	FROM book
+);
 
-DELETE FROM book
-WHERE book_id IN (8, 9);    -- удаляем дубли из таблицы.
 SELECT * FROM book;
