@@ -1,5 +1,9 @@
+/* 
+В таблице book необходимо скорректировать значение для покупателя в столбце buy таким образом, 
+чтобы оно не превышало количество экземпляров книг, указанных в столбце amount.
+А цену тех книг, которые покупатель не заказывал, снизить на 10%.
+*/
 UPDATE book
-SET price = price * 0.9
-WHERE amount BETWEEN 5 AND 10;
-
-SELECT * FROM book;
+SET buy = IF(buy > amount, amount, buy),
+    price = IF(buy = 0, ROUND(price * 0.9, 2), price);
+select * from book;
