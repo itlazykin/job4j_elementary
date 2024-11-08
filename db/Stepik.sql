@@ -1,9 +1,7 @@
 /*
- Вывести из таблицы trip информацию о командировках тех сотрудников,
- фамилия которых заканчивается на букву «а», в отсортированном по убыванию даты последнего дня командировки виде.
- В результат включить столбцы name, city, per_diem, date_first, date_last.
- */
-SELECT name, city, per_diem, date_first, date_last
+Вывести в алфавитном порядке фамилии и инициалы тех сотрудников, которые были в командировке в Москве.
+*/
+SELECT DISTINCT name 
 FROM trip
-WHERE name LIKE '%а %'
-ORDER BY date_last DESC;
+WHERE city LIKE 'Москва'
+ORDER BY name ASC;
