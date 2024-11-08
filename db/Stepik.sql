@@ -1,9 +1,5 @@
-INSERT INTO book (title, author, price, amount)
-SELECT title, author, price, amount
-FROM supply
-WHERE author NOT IN (
-	SELECT author
-	FROM book
-);
+UPDATE book
+SET price = price * 0.9
+WHERE amount BETWEEN 5 AND 10;
 
 SELECT * FROM book;
