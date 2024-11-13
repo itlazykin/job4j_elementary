@@ -1,15 +1,14 @@
 /*
-Предложение DISTINCT используется для удаления дубликатов из набора результатов выборки.
-Предложение DISTINCT можно использовать только с операторами SELECT. Синтаксис следующий:
+Для того чтобы в выборку попали данные из нескольких столбцов, при этом уникальность учитывалась только лишь
+в части из них - используется предложение DISTINCT. Синтаксис выглядит следующим образом:
 
-SELECT DISTINCT имена_столбцов_через_запятую FROM название_таблицы;
+SELECT DISTINCT (имена_столбцов_через_запятую) имена_столбцов_через_запятую_отражаем_в_выборке FROM название_таблицы;
 
-Если в предложении DISTINCT указаны несколько столбцов для выборки,
-то запрос будет получать уникальные комбинации для перечисленных столбцов.
-При этом предложение DISTINCT не игнорирует значения null. Таким образом,
-при использовании DISTINCT в результатах выборки будет включать NULL в качестве отдельного значения.
+Хорошей практикой является всегда использовать ORDER BY вместе с DISTINCT чтобы сделать результирующий набор предсказуемый.
 
-Для представленной ниже схемы products напишите запрос, который выберет только уникальные записи по полю name и grade.
+Для представленной ниже схемы subjects напишите запрос, которые выполнит выборку уникальных строк по столбцу name,
+в выборку должны попасть данные из столбцов id, name и grade.
+При этом результирующая выборка должна быть отсортирована по полю name по убыванию.
 */
 
 CREATE TABLE subjects(
@@ -20,9 +19,10 @@ CREATE TABLE subjects(
 );
 
 INSERT INTO subjects VALUES(1, 'Math', 75, current_date);
-INSERT INTO subjects VALUES(2, 'Math', null, current_date);
-INSERT INTO subjects VALUES(3, 'Math', 75, current_date);
-INSERT INTO subjects VALUES(4, 'Math', 85, current_date);
-INSERT INTO subjects VALUES(5, 'Math', null, current_date);
+INSERT INTO subjects VALUES(2, 'English', 85, current_date);
+INSERT INTO subjects VALUES(3, 'Math', 50, current_date);
+INSERT INTO subjects VALUES(4, 'Computer Science', 95, current_date);
+INSERT INTO subjects VALUES(5, 'English', 75, current_date);
+INSERT INTO subjects VALUES(6, 'Computer Science', 85, current_date);
 
-SELECT DISTINCT name, grade FROM subjects;
+SELECT DISTINCT (name) id, name, grade FROM subjects ORDER BY name DESC;
