@@ -1,6 +1,7 @@
 /*
-Ваша задача - написать запрос, который выполнит выборку всех записей из таблицы subjects,
-при этом в выборке должны быть представлены данные только 2-х полей таблицы - name и start_date.
+Для представленной ниже схемы таблицы subjects необходимо написать запрос, который выполнит выборку всех записей.
+Выбирать будем только данные столбцов name и grade -
+при этом для name используйте псевдоним name_subject, а для grade - total_grade.
 */
 
 CREATE TABLE subjects(
@@ -16,4 +17,4 @@ INSERT INTO subjects VALUES(3, 'Sociology', 65, current_date);
 INSERT INTO subjects VALUES(4, 'Economic', 60, current_date);
 INSERT INTO subjects VALUES(5, 'Computer Science', 95, current_date);
 
-select name, start_date from subjects
+select name AS name_subject, grade AS total_grade from subjects
