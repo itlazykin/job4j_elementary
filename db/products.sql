@@ -1,7 +1,7 @@
 /*
-Ваша задача - написать запрос, который выполнит выборку всех записей из таблицы products,
- при этом в выборке должны быть представлены данные только двух полей таблицы - id и price.
-  Схема таблицы представлена ниже.
+Для представленной ниже схемы таблицы products необходимо написать запрос, который выполнит выборку всех записей.
+Выбирать будем только данные столбцов name и count -
+при этом для name используйте псевдоним product_name, а для count - actual_count.
 */
 
 CREATE TABLE products(
@@ -17,4 +17,4 @@ INSERT INTO products VALUES(3, 'milk', 75, 15);
 INSERT INTO products VALUES(4, 'butter', 115, 7);
 INSERT INTO products VALUES(5, 'sugar', 105, 30);
 
-select id, price from products
+select name AS product_name, count AS actual_count from products
