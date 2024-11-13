@@ -1,18 +1,15 @@
 /*
-При выполнении SELECT запроса, строки выборки будут возвращены в произвольном порядке.
-Для того, чтобы отсортировать строки результатов выборки, необходимо использовать оператор ORDER BY.
-Синтаксис выглядит следующим образом:
+Предложение DISTINCT используется для удаления дубликатов из набора результатов выборки.
+Предложение DISTINCT можно использовать только с операторами SELECT. Синтаксис следующий:
 
-SELECT имена_столбцов_через_запятую FROM название_таблицы ORDER BY имя_столбца_по_которому_сортируем ASC | DESC;
+SELECT DISTINCT имена_столбцов_через_запятую FROM название_таблицы;
 
-При этом учитываем следующие особенности:
-- столбцов для сортировки может быть несколько. В таком случае столбцы по которым выполняется сортировка,
-указываются через запятую. Если столбцов несколько, то в сортировке они учитываются в том порядке, в котором указаны;
-- ASC и DESC это сортировка по возрастанию и убыванию соответственно;
-- если не указано ASC или DESC, то по умолчанию выполняется сортировка по возрастанию. ASC указывать не обязательно.
+Если в предложении DISTINCT указаны несколько столбцов для выборки,
+то запрос будет получать уникальные комбинации для перечисленных столбцов.
+При этом предложение DISTINCT не игнорирует значения null. Таким образом,
+при использовании DISTINCT в результатах выборки будет включать NULL в качестве отдельного значения.
 
-Для представленной ниже схемы таблицы subjects необходимо написать запрос, который выполнит выборку всех записей.
-Выбирать будем данные всех столбцов, данные должны быть отсортированы по name и grade по возрастанию.
+Для представленной ниже схемы products напишите запрос, который выберет только уникальные записи по полю name и grade.
 */
 
 CREATE TABLE subjects(
@@ -22,10 +19,10 @@ CREATE TABLE subjects(
     start_date timestamp
 );
 
-INSERT INTO subjects VALUES(1, 'Math', 50, current_date);
-INSERT INTO subjects VALUES(2, 'English', 75, current_date);
-INSERT INTO subjects VALUES(3, 'Sociology', 65, current_date);
-INSERT INTO subjects VALUES(4, 'Economic', 60, current_date);
-INSERT INTO subjects VALUES(5, 'Computer Science', 95, current_date);
+INSERT INTO subjects VALUES(1, 'Math', 75, current_date);
+INSERT INTO subjects VALUES(2, 'Math', null, current_date);
+INSERT INTO subjects VALUES(3, 'Math', 75, current_date);
+INSERT INTO subjects VALUES(4, 'Math', 85, current_date);
+INSERT INTO subjects VALUES(5, 'Math', null, current_date);
 
-SELECT * FROM subjects ORDER BY name, grade;
+SELECT DISTINCT name, grade FROM subjects;
