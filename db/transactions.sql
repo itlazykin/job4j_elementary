@@ -1,14 +1,15 @@
 /*
-Для того чтобы посчитать среднее значение в каком-нибудь столбце можно использовать функцию AVG.
-Если несколько значений в столбце совпадают, то для того, чтобы посчитать только среднее значение среди
-уникальных значений, то можно просто добавить DISTINCT - выглядит это следующим образом:
+Чтобы рассчитать среднее значение сгруппированных данных, вместе с AVG используем предложение GROUP BY -
+запрос будет выглядеть следующим образом:
 
-SELECT AVG(DISTINCT имя_столбца) FROM название_таблицы;
+SELECT столбец_группировки, остальные_столбцы, AVG(имя_столбца) FROM название_таблицы GROUP BY столбец_группировки;
 
-В результате мы получим среднее значение только среди уникальных значений в столбце.
+Вначале предложение GROUP BY делит данные таблицы на группы, а далее AVG выполняет расчет среднего значения для
+каждой из групп.
 
-Для представленной ниже схемы transactions напишите запрос, который вернет среднее значение по столбцу amount и
-при этом для расчета будут только уникальные значения amount.
+Для представленной ниже схемы transactions напишите запрос, который вернет среднее значение по столбцу amount.
+Данные должны быть сгруппированы по столбцу purpose, а также отсортированы по этому столбцу по возрастанию.
+В результатах выборки должны быть только столбец purpose и AVG.
 */
 
 CREATE TABLE transactions(
@@ -21,12 +22,15 @@ CREATE TABLE transactions(
 
 INSERT INTO transactions VALUES(1, 'Credit', 1, 132, '2022-06-01 12:00:00');
 INSERT INTO transactions VALUES(2, 'Current payment', 2, 94, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(3, 'Service', 3, 197, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(4, 'Vacation', 4, 253, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(5, 'Delivery', 3, 167, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(6, 'Current payment', 4, 84, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(7, 'Service', 1, 132, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(8, 'Credit', 2, 672, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(9, 'Vacation', 1, 206, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(3, 'Service', 3, 194, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(4, 'Vacation', 4, 254, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(5, 'Credit', 1, 244, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(6, 'Current payment', 2, 114, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(7, 'Service', 3, 178, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(8, 'Vacation', 4, 196, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(9, 'Credit', 1, 198, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(10, 'Current payment', 2, 78, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(11, 'Service', 3, 156, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(12, 'Vacation', 4, 152, '2022-06-01 12:00:00');
 
-SELECT AVG(DISTINCT amount) FROM transactions;
+SELECT purpose, AVG(amount) FROM transactions GROUP BY purpose ORDER BY purpose ASC
