@@ -1,29 +1,24 @@
 /*
-Мы уже рассмотрели использование DISTINCT. Если в предложении указывать несколько столбцов,
-то в итоге мы получим записи с уникальными сочетаниями всех этих полей.
-Для того чтобы в выборку попали данные из нескольких столбцов, при этом уникальность учитывалась только лишь в части
-из них - используется предложение DISTINCT . Синтаксис выглядит следующим образом:
+Функция COUNT() представляет собой агрегатную функцию, которая позволяет получить количество строк,
+удовлетворяющих определенному условию запроса. К примеру, запрос можно выполнить следующим образом:
 
-SELECT DISTINCT (имена_столбцов_через_запятую) имена_столбцов_через_запятую_отражаем_в_выборке FROM название_таблицы;
+SELECT COUNT(*) FROM название_таблицы;
 
-Если список столбцов в скобках и после скобок совпадают - то все превращается в обычный DISTINCT.
-
-Для представленной ниже схемы accounts напишите запрос, который вернет только уникальные записи по полю name_person.
-При этом в выборке должны быть отражены значения полей name_person, login, password.
+Функция COUNT(*) вернет количество строк, возвращенных SELECT-ом, включая null и дубликаты.
+Если ее использовать на большом объеме данных, то запрос будет медленным.
 */
 
 CREATE TABLE accounts(
     id int not null primary key,
-    name_person text,
+    name text,
     login text,
     password text
 );
 
 INSERT INTO accounts VALUES(1, 'Petr Arsentev', 'parsentev', '1234');
 INSERT INTO accounts VALUES(2, 'Andrey Hincu', 'anincu', '4321');
-INSERT INTO accounts VALUES(3, 'Lana Sergeeva', 'lserg', '2156');
-INSERT INTO accounts VALUES(4, 'Petr Arsentev', 'arsentev_p', '1234');
-INSERT INTO accounts VALUES(5, 'Andrey Hincu', 'nincu_a', '4321');
-INSERT INTO accounts VALUES(6, 'Lana Sergeeva', 'serg_l', '2156');
+INSERT INTO accounts VALUES(3, 'Rail Shamsemuhametov', 'rsham', '5678');
+INSERT INTO accounts VALUES(4, 'Elena Kartashova', 'ekart', '8765');
+INSERT INTO accounts VALUES(5, 'Lana Sergeeva', 'lserg', '2156');
 
-SELECT DISTINCT (name_person) name_person, login, password FROM accounts;
+SELECT COUNT(*) FROM accounts;
