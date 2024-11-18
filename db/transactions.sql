@@ -1,15 +1,11 @@
 /*
-Чтобы рассчитать сумму значений сгруппированных данных, вместе с SUM используем предложение GROUP BY - запрос будет
-выглядеть следующим образом:
+Агрегатные функции в запросах можно совмещать, т.е. одновременно считать и сумму и среднее значение по столбцу.
+Выглядеть это будет следующим образом:
 
-SELECT столбец_группировки, остальные_столбцы, SUM(имя_столбца) FROM название_таблицы GROUP BY столбец_группировки;
+SELECT AVG(имя_столбца), SUM(имя_столбца) FROM название_таблицы;
 
-Вначале предложение GROUP BY делит данные таблицы на группы, а далее SUM выполняет расчет суммы значений для каждой из
-групп.
-
-Для представленной ниже схемы transactions напишите запрос, который вернет сумму значений по столбцу amount.
-Данные должны быть сгруппированы по столбцу purpose, а также отсортированы по этому столбцу по убыванию.
-В результатах выборки должны быть только столбец purpose и SUM.
+Для представленной ниже схемы transactions выполните запрос,
+который посчитает среднее значение и сумму по столбцу amount.
 */
 
 CREATE TABLE transactions(
@@ -22,15 +18,12 @@ CREATE TABLE transactions(
 
 INSERT INTO transactions VALUES(1, 'Credit', 1, 132, '2022-06-01 12:00:00');
 INSERT INTO transactions VALUES(2, 'Current payment', 2, 94, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(3, 'Service', 3, 194, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(4, 'Vacation', 4, 254, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(5, 'Credit', 1, 244, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(6, 'Current payment', 2, 114, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(7, 'Service', 3, 178, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(8, 'Vacation', 4, 196, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(9, 'Credit', 1, 198, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(10, 'Current payment', 2, 78, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(11, 'Service', 3, 156, '2022-06-01 12:00:00');
-INSERT INTO transactions VALUES(12, 'Vacation', 4, 152, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(3, 'Service', 3, 197, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(4, 'Vacation', 4, 253, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(5, 'Delivery', 3, 167, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(6, 'Current payment', 4, 84, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(7, 'Service', 1, 132, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(8, 'Credit', 2, 672, '2022-06-01 12:00:00');
+INSERT INTO transactions VALUES(9, 'Vacation', 1, 206, '2022-06-01 12:00:00');
 
-SELECT purpose, SUM(amount) FROM transactions GROUP BY purpose ORDER BY purpose DESC;
+SELECT AVG(amount), SUM(amount) FROM transactions;
