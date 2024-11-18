@@ -1,14 +1,14 @@
 /*
-Для того чтобы в выборку попали данные из нескольких столбцов, при этом уникальность учитывалась только лишь
-в части из них - используется предложение DISTINCT. Синтаксис выглядит следующим образом:
+Функция COUNT() представляет собой агрегатную функцию, которая позволяет получить количество строк,
+удовлетворяющих определенному условию запроса. К примеру, запрос можно выполнить следующим образом:
 
-SELECT DISTINCT (имена_столбцов_через_запятую) имена_столбцов_через_запятую_отражаем_в_выборке FROM название_таблицы;
+SELECT COUNT(имя_столбца) FROM название_таблицы;
 
-Хорошей практикой является всегда использовать ORDER BY вместе с DISTINCT чтобы сделать результирующий набор предсказуемый.
+По аналогии с COUNT(*), функция COUNT(имя_столбца) вернет количество строк, возвращенных SELECT-ом.
+Однако он не учитывает null значения в столбце который мы передаем в COUNT.
 
-Для представленной ниже схемы subjects напишите запрос, которые выполнит выборку уникальных строк по столбцу name,
-в выборку должны попасть данные из столбцов id, name и grade.
-При этом результирующая выборка должна быть отсортирована по полю name по убыванию.
+Для представленной ниже схемы subjects выполните запрос с использованием COUNT, по столбцу name.
+В итоге получим количество строк, в которых в поле name могут быть null.
 */
 
 CREATE TABLE subjects(
@@ -18,11 +18,15 @@ CREATE TABLE subjects(
     start_date timestamp
 );
 
-INSERT INTO subjects VALUES(1, 'Math', 75, current_date);
-INSERT INTO subjects VALUES(2, 'English', 85, current_date);
-INSERT INTO subjects VALUES(3, 'Math', 50, current_date);
-INSERT INTO subjects VALUES(4, 'Computer Science', 95, current_date);
-INSERT INTO subjects VALUES(5, 'English', 75, current_date);
-INSERT INTO subjects VALUES(6, 'Computer Science', 85, current_date);
+INSERT INTO subjects VALUES(1, 'Math', 50, current_date);
+INSERT INTO subjects VALUES(2, null, 75, current_date);
+INSERT INTO subjects VALUES(3, 'Sociology', 65, current_date);
+INSERT INTO subjects VALUES(4, null, 60, current_date);
+INSERT INTO subjects VALUES(5, 'Computer Science', 95, current_date);
+INSERT INTO subjects VALUES(6, null, 50, current_date);
+INSERT INTO subjects VALUES(7, 'English', 75, current_date);
+INSERT INTO subjects VALUES(8, null, 65, current_date);
+INSERT INTO subjects VALUES(9, 'Economics', 60, current_date);
+INSERT INTO subjects VALUES(10, null, 95, current_date);
 
-SELECT DISTINCT (name) id, name, grade FROM subjects ORDER BY name DESC;
+SELECT COUNT(name) FROM subjects;
