@@ -1,14 +1,16 @@
 /*
-Функция COUNT() представляет собой агрегатную функцию, которая позволяет получить количество строк,
-удовлетворяющих определенному условию запроса. К примеру, запрос можно выполнить следующим образом:
+Для того, чтобы выбрать строки, которые удовлетворяют заданному условию, в SQL используется WHERE предложение.
 
-SELECT COUNT(имя_столбца) FROM название_таблицы;
+Если мы хотим сопоставить какое-то значение в столбце с любым значением в списке мы можем использовать оператор IN.
+Синтаксис будет следующим:
 
-По аналогии с COUNT(*), функция COUNT(имя_столбца) вернет количество строк, возвращенных SELECT-ом.
-Однако он не учитывает null значения в столбце который мы передаем в COUNT.
+SELECT имена_столбцов_через_запятую FROM название_таблицы WHERE столбец_для_проверки IN (значение1, значение2, и т.д.);
 
-Для представленной ниже схемы subjects выполните запрос с использованием COUNT, по столбцу name.
-В итоге получим количество строк, в которых в поле name могут быть null.
+Если значение в проверяемом столбце совпадет с любой из строк в операторе IN,
+то такая строка попадет в результаты выборки.
+
+Для представленной ниже схемы напишите запрос, который вернет только те строки,
+у которых в столбце grade будет значение 50, 60 или 70.
 */
 
 CREATE TABLE subjects(
@@ -19,14 +21,10 @@ CREATE TABLE subjects(
 );
 
 INSERT INTO subjects VALUES(1, 'Math', 50, current_date);
-INSERT INTO subjects VALUES(2, null, 75, current_date);
+INSERT INTO subjects VALUES(2, 'English', 75, current_date);
 INSERT INTO subjects VALUES(3, 'Sociology', 65, current_date);
-INSERT INTO subjects VALUES(4, null, 60, current_date);
-INSERT INTO subjects VALUES(5, 'Computer Science', 95, current_date);
-INSERT INTO subjects VALUES(6, null, 50, current_date);
-INSERT INTO subjects VALUES(7, 'English', 75, current_date);
-INSERT INTO subjects VALUES(8, null, 65, current_date);
-INSERT INTO subjects VALUES(9, 'Economics', 60, current_date);
-INSERT INTO subjects VALUES(10, null, 95, current_date);
+INSERT INTO subjects VALUES(4, 'Economics', 60, current_date);
+INSERT INTO subjects VALUES(5, 'Computer Science', 70, current_date);
 
-SELECT COUNT(name) FROM subjects;
+SELECT * FROM subjects
+WHERE grade IN (50, 60, 70);
