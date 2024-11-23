@@ -18,15 +18,18 @@ CREATE TABLE B (
  FROM A
  INNER JOIN B ON pka = fka;
 
-Таким образом, чтобы выполнить объединение таблиц А и В, необходимо выполнить следующее:
-- сначала указываем столбцы из обеих таблиц, данные которых мы хотим получить в результатах;
-- во-вторых, указываем основную таблицу, т.е. таблицу А во FROM;
-- в-третьих, указываем вторую таблицу B в предложении INNER JOIN и далее указываем
-условие соединения после ключевого слова ON.
+Важно подчеркнуть, что согласно документации, если не указано иного по умолчанию выполняется INNER JOIN. Т.е. слово
+INNER в запросе можно опустить, и мы получим аналогичный результат.
+Таким образом, представленный выше запрос будет иметь вид:
 
- Для представленной ниже схемы таблиц выполните запрос, который выполнит выборку всех строк,
- в результатах должны быть отражены данные столбцов id, model, volume, power,
- связь между таблицами осуществляется с помощью столбцов id  и car_id.
+SELECT pka, c1, pkb, c2
+FROM A
+JOIN B ON pka = fka;
+
+Для представленной ниже схемы напишите запрос, который вернет все строки с использованием объединения JOIN.
+В результатах выборки будут отражены столбцы id из таблицы cars, model, volume, power. Объединение происходит по
+столбцам id из таблицы cars и столбцу car_id. В качестве псевдонимов используйте первые буквы названия таблиц.
+
  */
 
 CREATE TABLE cars (
@@ -38,15 +41,13 @@ INSERT INTO cars VALUES (1, 'Toyota Camry');
 INSERT INTO cars VALUES (2, 'Renault Sandero');
 
 CREATE TABLE engines (
-    number int primary key,
+    id int primary key,
     volume decimal,
     power int,
     car_id int references cars(id)
 );
 
-INSERT INTO engines VALUES (1234, 2.5, 181, 1);
-INSERT INTO engines VALUES (5678, 1.2, 75, 2);
+SELECT c.id, c.model, e.volume, e.power
+FROM cars AS c
+JOIN engines AS e on c.id = car_id;
 
-SELECT id, model, volume, power
-FROM cars
-INNER JOIN engines ON id = car_id;
