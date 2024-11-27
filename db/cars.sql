@@ -1,53 +1,61 @@
 /*
- Для того чтобы получить данные из нескольких таблиц, используется INNER JOIN.
+Для того чтобы получить данные из нескольких таблиц, используется JOIN. При этом бывают не только внутренние,
+но и внешние JOIN. В свою очередь они бывают разных видов. Рассмотрим LEFT JOIN.
+Например, у нас есть две таблицы:
 
- Например, есть 2 таблицы:
- CREATE TABLE A (
-     pka int primary key,
-     c1 text
+CREATE TABLE A (
+    pka int primary key,
+    c1 text
 );
+
 CREATE TABLE B (
-     pkb int primary key,
-     c2 text,
-     fka int references A(pka)
+    pkb int primary key,
+    c2 text,
+    fka int references A(pka)
 );
 
-Синтаксис выполнения SELECT запроса с использование INNER JOIN будет иметь вид:
+Каждая строка в таблице А может иметь много соответствующих строк в таблице В или не иметь вообще.
+В это же время каждая строка в таблице В, имеет одну и только одну соответствующую в таблице А.
 
- SELECT pka, c1, pkb, c2
- FROM A
- INNER JOIN B ON pka = fka;
-
-Важно подчеркнуть, что согласно документации, если не указано иного по умолчанию выполняется INNER JOIN. Т.е. слово
-INNER в запросе можно опустить, и мы получим аналогичный результат.
-Таким образом, представленный выше запрос будет иметь вид:
+Для того, чтобы сделать выборку данных из таблицы А, которые могут иметь или не иметь соответствующие строки
+в таблице В, то необходимо использовать предложение LEFT JOIN. Делается это следующим образом:
+- сначала необходимо указать столбцы в обеих таблицах, из которых мы хотим выбирать данные;
+- необходимо указать левую таблицу (таблица А) в предложении FROM;
+- указываем правую таблицу (таблицу В) в предложении LEFT JOIN и условие соединения после ключевого слова ON.
+Таким образом, запрос будет иметь вид:
 
 SELECT pka, c1, pkb, c2
 FROM A
-JOIN B ON pka = fka;
+LEFT JOIN B ON pka = fka;
+При этом также можно указать LEFT OUTER JOIN, указание OUTER не является обязательным.
 
-Для представленной ниже схемы напишите запрос, который вернет все строки с использованием объединения JOIN.
-В результатах выборки будут отражены столбцы id из таблицы cars, model, volume, power. Объединение происходит по
-столбцам id из таблицы cars и столбцу car_id. В качестве псевдонимов используйте первые буквы названия таблиц.
+Напишите запрос для таблиц ниже, который выполнит LEFT JOIN. Левая таблица – таблица cars.
+Объединение осуществляется по столбцам id и car_id. В результатах выборки должны быть отражены значения
+столбцов id, model, number, volume, power.
 
  */
 
 CREATE TABLE cars (
-     id int primary key,
-     model text
+    id int primary key,
+    model text
 );
 
-INSERT INTO cars VALUES (1, 'Toyota Camry');
-INSERT INTO cars VALUES (2, 'Renault Sandero');
-
 CREATE TABLE engines (
-    id int primary key,
+    number int primary key,
     volume decimal,
     power int,
     car_id int references cars(id)
 );
 
-SELECT c.id, c.model, e.volume, e.power
-FROM cars AS c
-JOIN engines AS e on c.id = car_id;
+INSERT INTO cars VALUES (1, 'Toyota Camry');
+INSERT INTO cars VALUES (2, 'Kia Rio');
+INSERT INTO cars VALUES (3, 'Audi A6');
+INSERT INTO cars VALUES (4, 'Renault Sandero');
+
+INSERT INTO engines VALUES (1234, 2.5, 181, 1);
+INSERT INTO engines VALUES (5678, 1.2, 75, 4);
+
+SELECT id, model, number, volume, power
+FROM cars
+LEFT JOIN engines ON id = car_id;
 
