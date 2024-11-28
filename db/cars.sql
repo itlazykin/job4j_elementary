@@ -1,38 +1,39 @@
 /*
-Для того чтобы получить данные из нескольких таблиц, используется JOIN. При этом бывают не только внутренние,
-но и внешние JOIN. В свою очередь они бывают разных видов. Рассмотрим LEFT JOIN.
-Например, у нас есть две таблицы:
+Для того чтобы получить данные из нескольких таблиц, используется JOIN.
+При этом бывают не только внутренние, но и внешние JOIN. В свою очередь они бывают разных видов. Рассмотрим RIGHT JOIN.
+Например, у нас есть следующие таблицы:
 
-CREATE TABLE A (
-    pka int primary key,
-    c1 text
+CREATE TABLE films (
+    film_id int  PRIMARY KEY,
+    title text
 );
 
-CREATE TABLE B (
-    pkb int primary key,
-    c2 text,
-    fka int references A(pka)
+CREATE TABLE film_reviews (
+    review_id int PRIMARY KEY,
+    review text,
+    film_id int
 );
 
-Каждая строка в таблице А может иметь много соответствующих строк в таблице В или не иметь вообще.
-В это же время каждая строка в таблице В, имеет одну и только одну соответствующую в таблице А.
-
-Для того, чтобы сделать выборку данных из таблицы А, которые могут иметь или не иметь соответствующие строки
-в таблице В, то необходимо использовать предложение LEFT JOIN. Делается это следующим образом:
+Т.е. у фильма может быть ноль или много рецензий, а рецензия принадлежит нолю или одному фильму.
+Столбец film_id в films ссылается на столбец film_id в film_reviews таблице.
+Для того, чтобы сделать выборку данных из таблицы films_reviews,
+которые могут иметь или не иметь соответствующие строки в таблице films,
+то необходимо использовать предложение RIGHT JOIN. Делается это следующим образом:
 - сначала необходимо указать столбцы в обеих таблицах, из которых мы хотим выбирать данные;
-- необходимо указать левую таблицу (таблица А) в предложении FROM;
-- указываем правую таблицу (таблицу В) в предложении LEFT JOIN и условие соединения после ключевого слова ON.
+- необходимо указать левую таблицу (таблица films) в предложении FROM;
+- указываем правую таблицу (таблицу films_reviews) в предложении RIGHT JOIN и условие соединения после ключевого слова ON.
 Таким образом, запрос будет иметь вид:
 
-SELECT pka, c1, pkb, c2
-FROM A
-LEFT JOIN B ON pka = fka;
-При этом также можно указать LEFT OUTER JOIN, указание OUTER не является обязательным.
+SELECT review, title
+FROM films
+RIGHT JOIN film_reviews on films.film_id = film_reviews.film_id;
 
-Напишите запрос для таблиц ниже, который выполнит LEFT JOIN. Левая таблица – таблица cars.
-Объединение осуществляется по столбцам id и car_id. В результатах выборки должны быть отражены значения
-столбцов id, model, number, volume, power.
+Для сокращения можно использовать псевдонимы имен таблиц. Также можно писать RIGHT OUTER JOIN,
+хотя использование OUTER не является обязательным.
 
+Напишите запрос с использованием RIGHT JOIN для схемы, представленной ниже.
+В результатах должны быть отражены значения столбцов id, model, number, volume, power.
+Объединением происходит по столбцу id из cars и car_id из engines.
  */
 
 CREATE TABLE cars (
@@ -48,14 +49,13 @@ CREATE TABLE engines (
 );
 
 INSERT INTO cars VALUES (1, 'Toyota Camry');
-INSERT INTO cars VALUES (2, 'Kia Rio');
-INSERT INTO cars VALUES (3, 'Audi A6');
-INSERT INTO cars VALUES (4, 'Renault Sandero');
+INSERT INTO cars VALUES (2, 'Renault Sandero');
 
 INSERT INTO engines VALUES (1234, 2.5, 181, 1);
-INSERT INTO engines VALUES (5678, 1.2, 75, 4);
+INSERT INTO engines VALUES (5678, 1.2, 75, 2);
+INSERT INTO engines VALUES (1479, 1.6, 123, null);
+INSERT INTO engines VALUES (5072, 3.0, 231, null);
 
 SELECT id, model, number, volume, power
 FROM cars
-LEFT JOIN engines ON id = car_id;
-
+RIGHT JOIN engines ON id = car_id
