@@ -1,32 +1,48 @@
 /*
-Для того чтобы получить данные из нескольких таблиц, используется JOIN. При этом бывают не только внутренние,
-но и внешние JOIN. В свою очередь они бывают разных видов. Рассмотрим FULL OUTER JOIN.
+Для того чтобы получить данные из нескольких таблиц, используется JOIN. В свою очередь они бывают разных видов.
+Рассмотрим NATURAL JOIN.
+NATURAL JOIN – это соединение, которое создает неявное соединение на основе тех столбцов в соединяемых таблицах которые
+ имеют одинаковые имена.
+Например, есть таблицы:
 
-Например, мы хотим выполнить полное внешнее соединение двух таблиц: А и В. Синтаксис будет иметь вид:
+CREATE TABLE categories (
+    category_id int PRIMARY KEY,
+    category_name text NOT NULL
+);
 
-SELECT * FROM A
-FULL OUTER JOIN B on A.id = B.id;
+CREATE TABLE products (
+    product_id int PRIMARY KEY,
+    product_name text,
+    category_id int references categories(category_id) NOT NULL
+);
 
-Часто FULL OUTER JOIN используется с предложением WHERE, для того чтобы выделить ту часть результирующего набора,
-в которой в определенных столбцах получилось при объединении значение null. Тут нам поможет оператор IS NULL.
-Логика и синтаксис использования WHERE будет полностью аналогична тому, что мы обсуждали в предыдущих разделах.
+В данном случае category_id в таблице products – это внешний ключ, который ссылается на первичный ключ таблицы
+categories. Мы видим, что названия столбцов совпадают и, соответственно, его мы будем использовать для внешнего
+соединения.
 
-Для представленной ниже схемы напишите запрос с использованием FULL OUTER JOIN вместе с WHERE.
-Цель запроса – найти сотрудника, который не принадлежит ни к какому отделу. В результирующем наборе должны быть
-отражены только значения столбцов name из обоих таблиц. Левая таблица – employees, правая – departments.
+Простейший вариант использования NATURAL JOIN будет иметь вид:
 
+SELECT *
+FROM categories
+NATURAL JOIN products;
 
+Удобство NATURAL JOIN заключается в том, что нам не нужно указывать логическое выражение для соединения,
+поскольку в данном случае используется неявное предложение соединения, которое основывается на совпадении
+значений общего столбца в таблицах.
+
+Для представленной ниже схемы напишите запрос с использованием NATURAL JOIN. Это должен быть INNER JOIN.
+Должны быть в результатах отражены значения всех столбцов, используйте (*).
 */
 
 CREATE TABLE departments (
-    id int primary key,
+    department_id int primary key,
     name text not null
 );
 
 CREATE TABLE employees (
     id int primary key,
-    name text,
-    department_id int references departments(id)
+    employee_name text,
+    department_id int references departments(department_id)
 );
 
 INSERT INTO departments VALUES (1, 'Sales'),
@@ -42,6 +58,5 @@ INSERT INTO employees VALUES (1, 'Ivan Ivanov', 1),
                              (5, 'Irina Trubkina', 4),
                              (6, 'Evgenii Shtukov', null);
 
-SELECT e.name, d.name FROM employees AS e
-FULL OUTER JOIN departments AS d ON d.id = e.department_id
-WHERE d.name IS NULL
+SELECT * FROM departments
+NATURAL INNER JOIN employees
