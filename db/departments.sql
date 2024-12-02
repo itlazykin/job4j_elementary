@@ -1,34 +1,47 @@
 /*
 Для того чтобы получить данные из нескольких таблиц, используется JOIN. В свою очередь они бывают разных видов.
 Рассмотрим NATURAL JOIN.
-NATURAL JOIN – это соединение, которое создает неявное соединение на основе тех столбцов в соединяемых таблицах которые
- имеют одинаковые имена.
+NATURAL JOIN – это соединение, которое создает неявное соединение на основе тех столбцов в соединяемых таблицах
+которые имеют одинаковые имена.
 Например, есть таблицы:
 
-CREATE TABLE categories (
-    category_id int PRIMARY KEY,
-    category_name text NOT NULL
+CREATE TABLE departments (
+    department_id int primary key,
+    name text not null
 );
 
-CREATE TABLE products (
-    product_id int PRIMARY KEY,
-    product_name text,
-    category_id int references categories(category_id) NOT NULL
+CREATE TABLE employees (
+    id int primary key,
+    employee_name text,
+    department_id int references departments(department_id)
 );
 
-В данном случае category_id в таблице products – это внешний ключ, который ссылается на первичный ключ таблицы
-categories. Мы видим, что названия столбцов совпадают и, соответственно, его мы будем использовать для внешнего
-соединения.
+В данном случае department_id в таблице employees – это внешний ключ, который ссылается на первичный ключ таблицы
+departments. Мы видим, что названия столбцов совпадают и, соответственно, его мы будем использовать для
+внешнего соединения.
+Тем не менее, следует избегать использования NATURAL JOIN в том случае, если это возможно, поскольку иногда это может
+привести к неожиданному результату. Например, представленные выше таблицы немного изменим:
 
-Простейший вариант использования NATURAL JOIN будет иметь вид:
+CREATE TABLE departments (
+    department_id int primary key,
+    name text not null
+);
+
+CREATE TABLE employees (
+    id int primary key,
+    name text,
+    department_id int references departments(department_id)
+);
+
+Как и ранее обе таблицы имеют один и тот же столбец department_id, следственно мы можем использовать NATURAL JOIN.
+Однако следующий запрос:
 
 SELECT *
-FROM categories
-NATURAL JOIN products;
+FROM departments
+NATURAL JOIN employees;
 
-Удобство NATURAL JOIN заключается в том, что нам не нужно указывать логическое выражение для соединения,
-поскольку в данном случае используется неявное предложение соединения, которое основывается на совпадении
-значений общего столбца в таблицах.
+Вернет пустой набор результатов. Связано это с тем, что в таблицах имеется одинаковый столбец name,
+который и будет использован для выполнения NATURAL JOIN.
 
 Для представленной ниже схемы напишите запрос с использованием NATURAL JOIN. Это должен быть INNER JOIN.
 Должны быть в результатах отражены значения всех столбцов, используйте (*).
@@ -41,7 +54,7 @@ CREATE TABLE departments (
 
 CREATE TABLE employees (
     id int primary key,
-    employee_name text,
+    name text,
     department_id int references departments(department_id)
 );
 
