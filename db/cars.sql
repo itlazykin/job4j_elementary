@@ -1,26 +1,23 @@
 /*
-Для того чтобы получить данные из нескольких таблиц, используется JOIN. При этом бывают не только внутренние,
-но и внешние JOIN. В свою очередь они бывают разных видов. Рассмотрим FULL OUTER JOIN.
-Например, мы хотим выполнить полное внешнее соединение двух таблиц: А и В. Синтаксис будет иметь вид:
+Для того чтобы получить данные из нескольких таблиц, используется JOIN. В свою очередь они бывают разных видов.
+Рассмотрим NATURAL JOIN.
+NATURAL JOIN – это соединение, которое создает неявное соединение на основе тех столбцов в соединяемых таблицах
+которые имеют одинаковые имена.
+Ниже представлен синтаксис natural join в Postgres:
 
-SELECT * FROM A
-FULL OUTER JOIN B on A.id = B.id;
+SELECT список_столбцов
+FROM table_1
+NATURAL [INNER, LEFT, RIGHT] JOIN table_2;
 
-Полное внешнее соединение объединяет результаты как левого, так и правого соединения.
-Если строки в объединенной таблице не совпадают,
-то полное внешнее соединение устанавливает значения NULL для каждого столбца, в котором нет совпадающей строки.
-Если строка из одной таблицы имеет соответствие строке в другой таблице,
-то результирующая строка будет содержать столбцы, которые заполнены данными из обеих таблиц.
-Таким образом, результат включает совпадающие строки из обеих таблиц, а также несовпадающие строки.
+Естественным соединением может быть INNER JOIN, LEFT или RIGHT JOIN. Если не указать тип объединения явно,
+то PostgreSQL будет использовать INNER JOIN.
 
-Для представленной ниже схемы напишите запрос с использование FULL OUTER JOIN.
-В результатах должны быть отражены значения всех столбцов обоих таблиц. Левая таблица – cars, правая – engines.
-
-
- */
+Для представленной ниже схемы выполните запрос с использованием NATURAL JOIN. Это должен быть LEFT JOIN.
+В результатах отражаем значения столбцов model, volume, power.
+*/
 
 CREATE TABLE cars (
-    id int primary key,
+    car_id int primary key,
     model text
 );
 
@@ -28,16 +25,18 @@ CREATE TABLE engines (
     number int primary key,
     volume decimal,
     power int,
-    car_id int references cars(id)
+    car_id int references cars(car_id)
 );
 
 INSERT INTO cars VALUES (1, 'Toyota Camry');
-INSERT INTO cars VALUES (2, 'Renault Sandero');
+INSERT INTO cars VALUES (2, 'Kia Rio');
+INSERT INTO cars VALUES (3, 'Audi A6');
+INSERT INTO cars VALUES (4, 'Renault Sandero');
 
 INSERT INTO engines VALUES (1234, 2.5, 181, 1);
-INSERT INTO engines VALUES (5678, 1.2, 75, 2);
 INSERT INTO engines VALUES (1479, 1.6, 123, null);
+INSERT INTO engines VALUES (5678, 1.2, 75, 4);
 INSERT INTO engines VALUES (5072, 3.0, 231, null);
 
-SELECT * FROM cars
-FULL OUTER JOIN engines ON id = car_id
+SELECT model, volume, power FROM cars
+NATURAL LEFT JOIN engines
