@@ -8,12 +8,23 @@ SELECT список_столбцов
 FROM table_1
 CROSS JOIN table_2;
 
-Если table_1 имеет n строк, а table_2 – m строк, то результирующий набор будет содержать n * m строк.
-Например, table_1 имеет 1000 строк, а table_2 – также 1000 строк, то в результирующем наборе будет уже 1_000_000 строк.
+Однако это выражение можно переписать без использования CROSS JOIN:
 
-Для приведенной ниже схемы напишите запрос с использованием CROSS JOIN.
-В результатах должны быть отражены значения столбцов a_name, b_name.
+SELECT список_столбцов
+FROM table_1, table_2;
+
+Т.е. если во FROM перечислять таблицы через запятую, то PostgreSQL по умолчанию будет выполнять CROSS JOIN.
+К тому же, для имитации перекрестного соединения можно использовать INNER JOIN с условием, которое будет
+всегда оцениваться как true:
+
+SELECT список_столбцов
+FROM table_1
+INNER JOIN table_2 ON true;
+
+Для приведенной ниже схемы напишите запрос с имитацией поведения CROSS JOIN, выбирайте любой из представленных выше
+вариантов. В результатах должны быть отражены значения столбцов a_name, b_name.
  */
+
 CREATE TABLE authors (
     a_id int primary key,
     a_name text
@@ -34,4 +45,4 @@ INSERT INTO books VALUES (1, 'Modern Operating System', 3),
                          (3, 'Computer Architecture', 3);
 
 SELECT a_name, b_name FROM authors
-CROSS JOIN books
+INNER JOIN books ON TRUE
