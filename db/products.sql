@@ -1,31 +1,41 @@
 /*
-Функция COUNT() представляет собой агрегатную функцию, которая позволяет получить количество строк,
-удовлетворяющих определенному условию запроса. К примеру, запрос можно выполнить следующим образом:
+GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы.
+При этом для каждой из групп можно будет использовать агрегатные функции, например COUNT() для подсчета предметов в
+каждой из групп. Синтаксис имеет следующий вид:
 
-SELECT COUNT(DISTINCT имя_столбца) FROM название_таблицы;
+SELECT
+    столбец_1,
+    столбец_2,
+    ...,
+    aggregate_function(столбец_3)
+FROM
+    название_таблицы
+GROUP BY
+    столбец_1,
+    столбец_2,
+    ...;
 
-В такой форме COUNT(DISTINCT имя_столбца) возвращает количество уникальных ненулевых значений в столбце,
-который мы указываем в COUNT.
+Необходимо учесть - любой столбец, который указан в SELECT
+(столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Для представленной ниже схемы products, который вернет количество ненулевых уникальных строк по столбцу name.
+Создайте запрос, который определит количество продуктов в каждой категории.
+Используйте таблицу "Продукты" с полями: продукт, категория. Группировка будет по category.
 */
 
-CREATE TABLE products(
-    id int not null primary key,
-    name text,
-    price int,
-    count int
+CREATE TABLE products
+(
+    id INT,
+    category   VARCHAR(50)
 );
 
-INSERT INTO products VALUES(1, 'bread', 50, 10);
-INSERT INTO products VALUES(2, 'cheese', 250, 8);
-INSERT INTO products VALUES(3, 'milk', 75, 15);
-INSERT INTO products VALUES(4, 'butter', 115, 7);
-INSERT INTO products VALUES(5, 'bread', 50, 10);
-INSERT INTO products VALUES(6, 'cheese', 250, 8);
-INSERT INTO products VALUES(7, 'milk', 75, 15);
-INSERT INTO products VALUES(8, 'bread', 50, 10);
-INSERT INTO products VALUES(9, 'cheese', 250, 8);
-INSERT INTO products VALUES(10, 'bread', 50, 10);
+INSERT INTO products
+VALUES (1, 'Electronics'),
+       (3, 'Books'),
+       (4, 'Clothing'),
+       (4, 'Books'),
+       (5, 'Electronics'),
+       (6, 'Books');
 
-SELECT COUNT(DISTINCT name) FROM products;
+SELECT category, COUNT(category) AS count
+FROM products
+GROUP BY category
