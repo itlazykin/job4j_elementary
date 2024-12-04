@@ -1,36 +1,42 @@
 /*
-Функция COUNT() представляет собой агрегатную функцию, которая позволяет получить количество строк,
-удовлетворяющих определенному условию запроса. К примеру, запрос можно выполнить следующим образом:
+GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы.
+При этом для каждой из групп можно будет использовать агрегатные функции, например COUNT() для подсчета предметов в
+каждой из групп. Синтаксис имеет следующий вид:
 
-SELECT имя_столбца, COUNT(имя_столбца) FROM название_таблицы GROUP BY имя_столбца;
+SELECT
+    столбец_1,
+    столбец_2,
+    ...,
+    aggregate_function(столбец_3)
+FROM
+    название_таблицы
+GROUP BY
+    столбец_1,
+    столбец_2,
+    ...;
 
-Функция COUNT() часто используется с предложением GROUP BY, чтобы вернуть количество элементов для каждой группы.
-Естественно, имя столбца, который мы ставим в COUNT и GROUP BY должны совпадать.
+Необходимо учесть - любой столбец, который указан в SELECT
+(столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Для представленной ниже схемы movies, напишите запрос, который вернет количество фильмов в каждой категории.
-Результат выборки должен быть отсортирован по возрастанию category_id.
-Соответственно в COUNT и GROUP BY будете использовать столбец category_id.
+Напишите запрос, который вычислит средний рейтинг фильмов для каждого жанра.
+Используйте таблицу "Фильмы" с полями: название фильма, жанр, рейтинг. Группировка будет по genre.
 */
 
-CREATE TABLE movies(
-    id int not null primary key,
-    name text,
-    producer text,
-    category_id int
+CREATE TABLE movies
+(
+    id INT PRIMARY KEY,
+    title    VARCHAR(100),
+    genre    VARCHAR(50),
+    rating   FLOAT
 );
 
-INSERT INTO movies VALUES(1, 'name_1', 'producer_1', 1);
-INSERT INTO movies VALUES(2, 'name_2', 'producer_2', 2);
-INSERT INTO movies VALUES(3, 'name_3', 'producer_3', 3);
-INSERT INTO movies VALUES(4, 'name_4', 'producer_4', 4);
-INSERT INTO movies VALUES(5, 'name_5', 'producer_3', 1);
-INSERT INTO movies VALUES(6, 'name_6', 'producer_2', 2);
-INSERT INTO movies VALUES(7, 'name_7', 'producer_4', 3);
-INSERT INTO movies VALUES(8, 'name_8', 'producer_1', 1);
-INSERT INTO movies VALUES(9, 'name_9', 'producer_3', 2);
-INSERT INTO movies VALUES(10, 'name_10', 'producer_1', 1);
+INSERT INTO movies
+VALUES (1, 'Movie1', 'Action', 8.5),
+       (2, 'Movie2', 'Drama', 7.8),
+       (3, 'Movie3', 'Action', 9.0),
+       (4, 'Movie4', 'Comedy', 6.5),
+       (5, 'Movie5', 'Drama', 8.2);
 
-SELECT category_id, COUNT(*)
+SELECT genre, AVG(rating) AS avg
 FROM movies
-GROUP BY category_id
-ORDER BY category_id ASC
+GROUP BY genre
