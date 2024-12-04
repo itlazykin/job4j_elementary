@@ -18,24 +18,45 @@ GROUP BY
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Создайте запрос, который определит количество продуктов в каждой категории.
-Используйте таблицу "Продукты" с полями: продукт, категория. Группировка будет по category.
+Создайте запрос, который вычислит общий доход от продаж для каждой категории товаров. Используйте таблицы:
+- "Продукты" с полями: товар, категория, цена. - "Продажи" с полями: продажа, id товара, количество.
+Группировка будет по category.
 */
 
 CREATE TABLE products
 (
-    id INT,
-    category   VARCHAR(50)
+    id INT PRIMARY KEY,
+    category   VARCHAR(50),
+    price      INT
+);
+
+CREATE TABLE sales
+(
+    sale_id    INT PRIMARY KEY,
+    product_id INT references products(id),
+    quantity   INT
 );
 
 INSERT INTO products
-VALUES (1, 'Electronics'),
-       (3, 'Books'),
-       (4, 'Clothing'),
-       (4, 'Books'),
-       (5, 'Electronics'),
-       (6, 'Books');
+VALUES (1, 'Electronics', 500),
+       (2, 'Clothing', 30),
+       (3, 'Electronics', 700),
+       (4, 'Books', 20);
 
-SELECT category, COUNT(category) AS count
-FROM products
-GROUP BY category
+INSERT INTO sales
+VALUES (1, 1, 10),
+       (2, 2, 5),
+       (3, 3, 8),
+       (4, 4, 12);
+
+SELECT
+    p.category AS category,
+    SUM(p.price * s.quantity) AS sum
+FROM
+    products p
+JOIN
+    sales s
+ON
+    p.id = s.product_id
+GROUP BY
+    p.category;
