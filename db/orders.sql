@@ -21,26 +21,32 @@ GROUP BY
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Создайте запрос, который подсчитает общее количество заказов для каждого клиента за текущий год.
- Группировка будет по client_id. Результаты выборки отсортируйте по убыванию client_id.
+Разработайте запрос, который подсчитает количество заказов, сделанных клиентами из определенного города - 'City_1',
+а также максимальное число товара, купленного каждым клиентом из этого города. Группировка будет по customer_id.
 */
 
 CREATE TABLE orders
 (
-    id         SERIAL PRIMARY KEY,
-    client_id  INT,
-    order_year INT,
-    amount     INT
+    id          SERIAL PRIMARY KEY,
+    customer_id INT,
+    city        VARCHAR(50),
+    amount      INT
 );
 
-INSERT INTO orders (client_id, order_year, amount)
-VALUES (1, 2023, 100),
-       (2, 2023, 150),
-       (1, 2023, 200),
-       (3, 2023, 50),
-       (2, 2023, 120);
+INSERT INTO orders (customer_id, city, amount)
+VALUES (1, 'City_1', 100),
+       (2, 'City_2', 150),
+       (3, 'City_3', 200),
+       (1, 'City_1', 200),
+       (4, 'City_4', 50),
+       (5, 'City_1', 120),
+       (6, 'City_2', 100),
+       (5, 'City_1', 150),
+       (7, 'City_3', 200),
+       (1, 'City_1', 50),
+       (4, 'City_4', 120);
 
-SELECT client_id, COUNT(amount) AS count
+SELECT customer_id, COUNT(city) AS count, MAX(amount) AS max
 FROM orders
-WHERE order_year = 2023
-GROUP BY client_id BY DESC
+WHERE city LIKE 'City_1'
+GROUP BY customer_id
