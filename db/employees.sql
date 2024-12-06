@@ -22,7 +22,7 @@ GROUP BY
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Напишите запрос, который вычислит средний возраст сотрудников для каждого отдела, оставив только тех, кто младше 30 лет.
+Напишите запрос, который вычислит общую сумму зарплаты по отделам, названия которых состоят только из двух символов.
 Группировка будет по department.
 */
 
@@ -31,17 +31,17 @@ CREATE TABLE employees
     id         SERIAL PRIMARY KEY,
     name       VARCHAR(50),
     department VARCHAR(50),
-    age        INT
+    salary     INT
 );
 
-INSERT INTO employees (name, department, age)
-VALUES ('John', 'HR', 28),
-       ('Jane', 'IT', 32),
-       ('Bob', 'Finance', 29),
-       ('Alice', 'IT', 26),
-       ('Charlie', 'HR', 30);
+INSERT INTO employees (name, department, salary)
+VALUES ('John', 'HR', 58000),
+       ('Jane', 'IT', 62000),
+       ('Bob', 'Finance', 63000),
+       ('Alice', 'IT', 60000),
+       ('Charlie', 'HR', 59000);
 
-SELECT department, AVG(age)
+SELECT department, SUM(salary) AS sum
 FROM employees
-WHERE age < 30
+WHERE department LIKE '%%'
 GROUP BY department
