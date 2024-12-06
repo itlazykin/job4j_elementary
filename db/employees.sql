@@ -43,5 +43,6 @@ VALUES ('John', 'HR', 58000),
 
 SELECT department, SUM(salary) AS sum
 FROM employees
-WHERE department LIKE '%%'
+WHERE department LIKE '__'
+-- WHERE LENGTH(department) = 2  или так.
 GROUP BY department
