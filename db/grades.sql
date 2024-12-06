@@ -1,10 +1,8 @@
 /*
-GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы.
-При этом для каждой из групп можно будет использовать агрегатные функции, например COUNT() для подсчета предметов в каждой из групп.
-
-Как и в других запросах, с GROUP BY можно использовать WHERE. Важно уяснить правило - WHERE обрабатывается после FROM и до GROUP BY. Таким образом, данные сначала фильтруются, а потом выполняется их группировка.
-
-Синтаксис имеет следующий вид:
+GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы. При этом для каждой из групп можно
+будет использовать агрегатные функции, например COUNT() для подсчета предметов в каждой из групп. Как и в других
+запросах, с GROUP BY можно использовать WHERE. Важно уяснить правило - WHERE обрабатывается после FROM и до GROUP BY.
+Таким образом, данные сначала фильтруются, а потом выполняется их группировка. Синтаксис имеет следующий вид:
 
 SELECT
     столбец_1,
@@ -23,37 +21,27 @@ GROUP BY
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Напишите запрос, который выведет топ-3 студентов по среднему баллу, учитывая только тех, кто получил оценки выше 80.
-Группировка будет по name.
+Напишите запрос, который подсчитает количество оценок по каждому студенту, учитывая только те,
+которые превышают среднюю оценку в таблице grades. Группировка будет по student_id.
 */
 
 CREATE TABLE grades
 (
-    id      SERIAL PRIMARY KEY,
-    name    VARCHAR(50),
-    subject VARCHAR(50),
-    grade   INT
+    id         SERIAL PRIMARY KEY,
+    student_id INT,
+    subject    VARCHAR(50),
+    grade      INT
 );
 
-INSERT INTO grades (name, subject, grade)
-VALUES ('Alice', 'Math', 85),
-       ('Jack', 'Math', 70),
-       ('Bob', 'Math', 78),
-       ('Alice', 'Physics', 90),
-       ('Bob', 'Physics', 88),
-       ('Charlie', 'Math', 92),
-       ('Charlie', 'Physics', 95),
-       ('Jack', 'Physics', 84);
+INSERT INTO grades (student_id, subject, grade)
+VALUES (1, 'Math', 85),
+       (2, 'Math', 78),
+       (1, 'Physics', 90),
+       (2, 'Physics', 88),
+       (3, 'Math', 92),
+       (3, 'Physics', 95);
 
-SELECT
-    name,
-    AVG(grade) AS average
-FROM
-    grades
-WHERE
-    grade > 80
-GROUP BY
-    name
-ORDER BY
-    average DESC
-LIMIT 3;
+SELECT student_id, COUNT(*) AS count
+FROM grades
+WHERE grade > (SELECT AVG(grade) FROM grades)
+GROUP BY student_id
