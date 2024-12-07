@@ -23,34 +23,31 @@ HAVING
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Создайте запрос, который вычислит средний рейтинг фильмов для каждого жанра, при условии, что в этом жанре есть более 2
-фильмов. Необходимо вывести общее число фильмов, средний рейтинг, минимальный и максимальный рейтинг.
-Группировка будет по genre.
+Вывести жанр фильма (genre), количество фильмов и средний рейтинг фильмов каждого жанра. Использовать GROUP BY и HAVING
+для отображения только тех жанров, у которых средний рейтинг больше 9.0. Группировка будет по genre.
 */
 
 CREATE TABLE movies
 (
-    id           INT PRIMARY KEY,
-    title        VARCHAR(255),
-    genre        VARCHAR(50),
-    rating       DECIMAL(3, 1),
-    release_year INT
+    id     INT PRIMARY KEY,
+    title  VARCHAR(255),
+    genre  VARCHAR(50),
+    rating DECIMAL(3, 1)
 );
 
 INSERT INTO movies
-VALUES (1, 'Movie1', 'Drama', 8.5, 2020),
-       (2, 'Movie2', 'Action', 7.8, 2019),
-       (3, 'Movie3', 'Drama', 9.0, 2021),
-       (4, 'Movie4', 'Action', 6.5, 2020),
-       (5, 'Movie5', 'Comedy', 8.2, 2018),
-       (6, 'Movie6', 'Comedy', 7.5, 2019),
-       (7, 'Movie7', 'Drama', 8.0, 2021);
+VALUES (1, 'The Shawshank Redemption', 'Drama', 9.3),
+       (2, 'The Godfather', 'Crime', 9.2),
+       (3, 'Pulp Fiction', 'Crime', 8.9),
+       (4, 'The Dark Knight', 'Action', 9.0),
+       (5, 'Schindler''s List', 'Biography', 8.9),
+       (6, 'Forrest Gump', 'Drama', 8.8),
+       (7, 'The Matrix', 'Action', 8.7),
+       (8, 'Inception', 'Action', 8.8),
+       (9, 'The Silence of the Lambs', 'Crime', 8.6),
+       (10, 'The Departed', 'Crime', 8.5);
 
-SELECT genre, COUNT(title) AS count, AVG(rating) as avg, MIN(rating) AS min, MAX(rating) AS max
+SELECT genre, COUNT(genre) AS count, AVG(rating) AS avg
 FROM movies
 GROUP BY genre
-HAVING
-AVG(rating) > 2 AND
-COUNT(title) > 2 AND
-MIN(rating) > 2 AND
-MAX(rating) > 2
+HAVING AVG(rating) > 9.0
