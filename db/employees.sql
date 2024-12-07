@@ -23,27 +23,32 @@ HAVING
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Напишите запрос, который вычислит общую сумму зарплаты по отделам, где средняя зарплата превышает 65000.
+Вывести идентификатор отдела (department_id), общее число сотрудников и минимальный возраст сотрудников в каждом отделе.
+Использовать GROUP BY и HAVING для отображения только тех отделов, у которых количество сотрудников больше 3.
 Группировка будет по department_id.
 */
 
 CREATE TABLE employees
 (
     id            INT PRIMARY KEY,
+    name          VARCHAR(255),
     department_id INT,
-    salary        DECIMAL(10, 2),
-    position      VARCHAR(50)
+    age           INT
 );
 
 INSERT INTO employees
-VALUES (1, 1, 70000.00, 'Manager'),
-       (2, 1, 60000.00, 'Developer'),
-       (3, 2, 75000.00, 'Manager'),
-       (4, 2, 55000.00, 'Developer'),
-       (5, 3, 80000.00, 'Manager'),
-       (6, 3, 65000.00, 'Developer');
+VALUES (1, 'John Doe', 1, 25),
+       (2, 'Jane Smith', 1, 28),
+       (3, 'Bob Johnson', 2, 32),
+       (4, 'Alice Brown', 2, 29),
+       (5, 'Charlie White', 1, 26),
+       (6, 'David Black', 3, 31),
+       (7, 'Eva Green', 3, 27),
+       (8, 'Frank Miller', 2, 30),
+       (9, 'Grace Davis', 1, 29),
+       (10, 'Henry Jones', 3, 33);
 
-SELECT department_id, SUM(salary), AVG(salary) AS avg
+SELECT department_id, COUNT(department_id) AS count, MIN(age) AS min
 FROM employees
 GROUP BY department_id
-HAVING AVG(salary) > 65000
+HAVING COUNT(department_id) > 3
