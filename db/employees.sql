@@ -23,8 +23,8 @@ HAVING
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Вывести идентификатор отдела (department_id), общее число сотрудников и минимальный возраст сотрудников в каждом отделе.
-Использовать GROUP BY и HAVING для отображения только тех отделов, у которых количество сотрудников больше 3.
+Вывести идентификатор отдела (department_id), общее число сотрудников и средний возраст сотрудников в каждом отделе.
+Использовать GROUP BY и HAVING для отображения только тех отделов, у которых средний возраст сотрудников меньше 30.
 Группировка будет по department_id.
 */
 
@@ -48,7 +48,7 @@ VALUES (1, 'John Doe', 1, 25),
        (9, 'Grace Davis', 1, 29),
        (10, 'Henry Jones', 3, 33);
 
-SELECT department_id, COUNT(department_id) AS count, MIN(age) AS min
+SELECT department_id, COUNT(department_id) AS count, AVG(age) AS avg
 FROM employees
 GROUP BY department_id
-HAVING COUNT(department_id) > 3
+HAVING AVG(age) < 30
