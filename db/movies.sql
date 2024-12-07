@@ -1,8 +1,9 @@
 /*
-GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы.
-При этом для каждой из групп можно будет использовать агрегатные функции, например COUNT() для подсчета предметов в
-каждой из групп. Как и в других запросах, с GROUP BY можно использовать WHERE. Важно уяснить правило - WHERE
-обрабатывается после FROM и до GROUP BY. Таким образом, данные сначала фильтруются, а потом выполняется их группировка.
+GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы. При этом для каждой из групп можно
+будет использовать агрегатные функции, например COUNT() для подсчета предметов в каждой из групп. Вместе с GROUP BY
+можно использовать HAVING. Этот оператор позволяет указать какие группы будут включены в выходной результат. Т.е.
+просто выполняют фильтрацию групп. Но очень важно усвоить разницу между WHERE и HAVING - в отличие от WHERE оператор
+HAVING будет выполняться после группировки данных. Т.е. WHERE фильтрует строки, а HAVING - группы после их группировки.
 Синтаксис имеет следующий вид:
 
 SELECT
@@ -12,42 +13,44 @@ SELECT
     aggregate_function(столбец_3)
 FROM
     название_таблицы
-WHERE
-    условие выборки
 GROUP BY
     столбец_1,
     столбец_2,
-    ...;
+    ...
+HAVING
+    условие_фильтрации_групп;
 
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Создайте запрос, который вычислит средний рейтинг фильмов для жанров, которые начинаются на 'D'.
+Создайте запрос, который вычислит средний рейтинг фильмов для каждого жанра, при условии, что в этом жанре есть более 2
+фильмов. Необходимо вывести общее число фильмов, средний рейтинг, минимальный и максимальный рейтинг.
 Группировка будет по genre.
 */
 
 CREATE TABLE movies
 (
-    movie_id SERIAL PRIMARY KEY,
-    title    VARCHAR(100),
-    genre    VARCHAR(50),
-    rating   FLOAT
+    id           INT PRIMARY KEY,
+    title        VARCHAR(255),
+    genre        VARCHAR(50),
+    rating       DECIMAL(3, 1),
+    release_year INT
 );
 
-INSERT INTO movies (title, genre, rating)
-VALUES ('Movie1', 'Action', 8.5),
-       ('Movie2', 'Documentary', 7.3),
-       ('Movie3', 'Drama', 7.8),
-       ('Movie4', 'Detective', 9.0),
-       ('Movie5', 'Action', 8.0),
-       ('Movie6', 'Documentary', 8.1),
-       ('Movie7', 'Comedy', 6.5),
-       ('Movie8', 'Detective', 7.5),
-       ('Movie9', 'Comedy', 5.9),
-       ('Movie10', 'Documentary', 9.8),
-       ('Movie11', 'Drama', 8.2);
+INSERT INTO movies
+VALUES (1, 'Movie1', 'Drama', 8.5, 2020),
+       (2, 'Movie2', 'Action', 7.8, 2019),
+       (3, 'Movie3', 'Drama', 9.0, 2021),
+       (4, 'Movie4', 'Action', 6.5, 2020),
+       (5, 'Movie5', 'Comedy', 8.2, 2018),
+       (6, 'Movie6', 'Comedy', 7.5, 2019),
+       (7, 'Movie7', 'Drama', 8.0, 2021);
 
-SELECT genre, AVG(rating) AS avg
+SELECT genre, COUNT(title) AS count, AVG(rating) as avg, MIN(rating) AS min, MAX(rating) AS max
 FROM movies
-WHERE genre LIKE 'D%'
 GROUP BY genre
+HAVING
+AVG(rating) > 2 AND
+COUNT(title) > 2 AND
+MIN(rating) > 2 AND
+MAX(rating) > 2
