@@ -98,19 +98,9 @@ VALUES (1, 1, 1, '2023-01-01', 2.5),
        (15, 5, 5, '2023-01-15', 6.0),
        (16, 3, 3, '2023-03-16', 4.5);
 
-SELECT
-
-SELECT
-    al.name AS name
-    COUNT(f.id) AS count,
-    AVG(f.flight_duration) AS avg
-FROM
-    flights f
-JOIN
-    airlines al
-ON
-    f.airline_id = al.id
-GROUP BY
-    al.name
-HAVING
-    AVG(f.flight_duration) > 3;
+SELECT al.name, COUNT(airplane_id) AS count
+FROM flights f
+JOIN airlines al ON f.airline_id = al.id
+GROUP BY al.name
+ORDER BY count DESC
+Limit 1
