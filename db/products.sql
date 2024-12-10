@@ -26,8 +26,8 @@ HAVING
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Необходимо найти среднюю цену продуктов, купленных каждым клиентом, у которых общие затраты превышают 125.
-Необходимо выводить id и имя клиента, среднюю цену, общие затраты. Группировка будет по id и имени клиента
+Необходимо найти клиента с наибольшей суммой покупок за все время и вывести его общие затраты.
+Должны быть выведены поля - id и имя клиента, а также его общие затраты. Группировка будет по id и имени клиента.
 */
 
 CREATE TABLE products
@@ -88,9 +88,10 @@ VALUES (1, 1, 2, 2023, 1),
        (2, 1, 2, 2023, 1),
        (3, 2, 1, 2023, 3);
 
-SELECT c.id, c.name, AVG(p.price) as avg, SUM(s.amount * p.price) as sum
+SELECT c.id, c.name, SUM(s.amount * p.price) as sum
 FROM sales AS s
 JOIN customers AS c ON s.customer_id = c.id
 JOIN products AS p ON p.id = s.product_id
 GROUP BY c.id, c.name
-HAVING SUM(s.amount * p.price) > 125
+ORDER BY sum DESC
+LIMIT 1
