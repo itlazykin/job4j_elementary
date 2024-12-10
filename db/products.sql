@@ -26,8 +26,8 @@ HAVING
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Необходимо найти общую выручку (сумму продаж) для каждого продукта за 3 месяц.
-Необходимо выводить поля с названием продукта и общей выручкой по нему. Группировка будет по названию продукта.
+Необходимо найти среднюю цену продуктов, купленных каждым клиентом, у которых общие затраты превышают 125.
+Необходимо выводить id и имя клиента, среднюю цену, общие затраты. Группировка будет по id и имени клиента
 */
 
 CREATE TABLE products
@@ -88,8 +88,9 @@ VALUES (1, 1, 2, 2023, 1),
        (2, 1, 2, 2023, 1),
        (3, 2, 1, 2023, 3);
 
-SELECT p.name, SUM(s.amount * p.price) as sum
+SELECT c.id, c.name, AVG(p.price) as avg, SUM(s.amount * p.price) as sum
 FROM sales AS s
+JOIN customers AS c ON s.customer_id = c.id
 JOIN products AS p ON p.id = s.product_id
-WHERE s.sale_month = 3
-GROUP BY p.name
+GROUP BY c.id, c.name
+HAVING SUM(s.amount * p.price) > 125
