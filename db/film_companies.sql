@@ -86,9 +86,14 @@ VALUES ('Movie 1', 2022, 120, 5000000, 1, 1),
        ('Movie 14', 2009, 125, 5500000, 2, 2),
        ('Movie 15', 2008, 110, 4000000, 3, 3);
 
-SELECT fc.name, AVG(m.budget) AS avg
-FROM movies AS m
+SELECT fc.name AS name, AVG(m.budget) AS avg
+FROM movies m
 JOIN film_companies fc ON m.company_id = fc.id
+WHERE  m.director_id IN (
+        SELECT director_id
+        FROM movies
+        GROUP BY director_id
+        HAVING COUNT(*) > 3
+    )
 GROUP BY fc.name
-HAVING COUNT(m.director_id) > 3 AND AVG(m.budget) > 5000000
-ORDER BY fc.name ASC
+HAVING AVG(m.budget) > 5000000;
