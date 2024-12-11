@@ -26,8 +26,9 @@ HAVING
 Необходимо учесть - любой столбец, который указан в SELECT
 (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
 
-Необходимо найти клиента с наибольшей суммой покупок за все время и вывести его общие затраты.
-Должны быть выведены поля - id и имя клиента, а также его общие затраты. Группировка будет по id и имени клиента.
+Необходимо найти продукты с количеством продаж (речь идет не о количестве проданных единиц товара) равным 2 в 2023 году
+и вывести информацию о них. Должны быть выведены поля: id и название продукта.
+Группировка будет по id и названию продукта.
 */
 
 CREATE TABLE products
@@ -88,10 +89,9 @@ VALUES (1, 1, 2, 2023, 1),
        (2, 1, 2, 2023, 1),
        (3, 2, 1, 2023, 3);
 
-SELECT c.id, c.name, SUM(s.amount * p.price) as sum
-FROM sales AS s
-JOIN customers AS c ON s.customer_id = c.id
-JOIN products AS p ON p.id = s.product_id
-GROUP BY c.id, c.name
-ORDER BY sum DESC
-LIMIT 1
+SELECT p.id, p.name
+FROM products p
+JOIN sales s ON p.id = s.product_id
+WHERE sale_year = 2023
+GROUP BY p.id, p.name
+HAVING COUNT(s.id) = 2
