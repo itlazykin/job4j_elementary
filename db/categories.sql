@@ -65,5 +65,5 @@ VALUES ('Смартфон', 20, 1000.00, 1),
        ('Спортивный костюм', 12, 70.00, 5),
        ('Научная литература', 30, 15.00, 4);
 
-SELECT * FROM products
-WHERE category_id = (SELECT id FROM categories WHERE name = 'Электроника');
+SELECT c.id, c.name FROM categories AS c
+WHERE c.id IN (SELECT p.category_id FROM products AS p WHERE p.quantity > 30);
