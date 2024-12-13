@@ -23,7 +23,7 @@ WHERE
 подзапроса для фильтрации данных в WHERE.
 
 Для таблиц и данных ниже необходимо:
-найти все продукты в категории 'Электроника'.
+найти все продукты с ценой выше средней цены по всем продуктам
 */
 
 CREATE TABLE categories
@@ -65,5 +65,5 @@ VALUES ('Смартфон', 20, 1000.00, 1),
        ('Спортивный костюм', 12, 70.00, 5),
        ('Научная литература', 30, 15.00, 4);
 
-SELECT c.id, c.name FROM categories AS c
-WHERE c.id IN (SELECT p.category_id FROM products AS p WHERE p.quantity > 30);
+SELECT * FROM products
+WHERE price > (SELECT AVG(price) FROM products)
