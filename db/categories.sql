@@ -23,7 +23,8 @@ WHERE
 подзапроса для фильтрации данных в WHERE.
 
 Для таблиц и данных ниже необходимо:
-найти все продукты с ценой выше средней цены по всем продуктам
+найти все продукты, их количество и категорию, где количество продукта больше, чем среднее количество продукта во всех
+категориях. Имена столбцов совпадают, для названия категории используйте псевдоним category_name
 */
 
 CREATE TABLE categories
@@ -65,5 +66,7 @@ VALUES ('Смартфон', 20, 1000.00, 1),
        ('Спортивный костюм', 12, 70.00, 5),
        ('Научная литература', 30, 15.00, 4);
 
-SELECT * FROM products
-WHERE price > (SELECT AVG(price) FROM products)
+SELECT  name AS product_name, quantity,
+    (SELECT name FROM categories WHERE id = products.category_id) AS category_name
+FROM products
+WHERE quantity > (SELECT AVG(quantity) FROM products);
