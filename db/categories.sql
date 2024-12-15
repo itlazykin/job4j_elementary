@@ -23,7 +23,7 @@ WHERE
 подзапроса для фильтрации данных в WHERE.
 
 Для таблиц и данных ниже необходимо:
-найти все продукты с ценой выше максимальной цены в категории 'Одежда'
+- найти все категории, в которых есть продукты с количеством меньше 20 и ценой выше 500
 */
 
 CREATE TABLE categories
@@ -66,13 +66,7 @@ VALUES ('Смартфон', 20, 1000.00, 1),
        ('Научная литература', 30, 15.00, 4);
 
 SELECT *
-FROM products
-WHERE price > (
-    SELECT MAX(price)
-    FROM products
-    WHERE category_id = (
-        SELECT id
-        FROM categories
-        WHERE name = 'Одежда'
-    )
-);
+FROM categories
+WHERE id IN (SELECT category_id FROM products
+WHERE quantity < 20 AND price > 500)
+
