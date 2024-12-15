@@ -23,7 +23,7 @@ WHERE
 подзапроса для фильтрации данных в WHERE.
 
 Для таблиц и данных ниже необходимо:
-- найти все категории, в которых есть продукты с количеством меньше 20 и ценой выше 500
+-найти все продукты, не относящиеся к категории 'Бытовая техника'.
 */
 
 CREATE TABLE categories
@@ -66,7 +66,7 @@ VALUES ('Смартфон', 20, 1000.00, 1),
        ('Научная литература', 30, 15.00, 4);
 
 SELECT *
-FROM categories
-WHERE id IN (SELECT category_id FROM products
-WHERE quantity < 20 AND price > 500)
+FROM products
+WHERE id IN (SELECT categories FROM products
+WHERE category_id != 'Бытовая техника')
 
