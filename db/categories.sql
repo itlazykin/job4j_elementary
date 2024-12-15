@@ -23,7 +23,9 @@ WHERE
 подзапроса для фильтрации данных в WHERE.
 
 Для таблиц и данных ниже необходимо:
--найти все продукты, не относящиеся к категории 'Бытовая техника'.
+найти все продукты, цена которых выше средней цены по продуктам в их категории;
+в результатах выводите id продукта, его имя (alias product_name),
+количество, цену и название категории (alias category_name)
 */
 
 CREATE TABLE categories
@@ -65,8 +67,16 @@ VALUES ('Смартфон', 20, 1000.00, 1),
        ('Спортивный костюм', 12, 70.00, 5),
        ('Научная литература', 30, 15.00, 4);
 
-SELECT *
+SELECT
+    id,
+    name AS product_name,
+    quantity,
+    price,
+    (SELECT name FROM categories WHERE id = products.category_id) AS category_name
 FROM products
-WHERE id IN (SELECT categories FROM products
-WHERE category_id != 'Бытовая техника')
+WHERE price > (
+    SELECT AVG(price)
+    FROM products AS sub
+    WHERE sub.category_id = products.category_id
+);
 
