@@ -25,8 +25,9 @@ FROM
 результат. Поэтому он и используется с различными агрегатными функциями.
 
 Для таблиц и данных ниже необходимо:
-объединить заказы по группам по user_id, посчитать во сколько раз средняя цена по группе больше минимальной цены в
-общем по всем заказам
+- получить идентификаторы пользователей с наибольшим числом заказов;
+- в результирущей выборке отразите id пользователя и количество заказов;
+- в качестве псевдонима для подзапроса используйте order_count.
 */
 
 CREATE TABLE users
@@ -70,17 +71,20 @@ VALUES (1, 100.00),
        (5, 70.90);
 
 SELECT
-    user_id,
-    (AVG(total_price) / (SELECT MIN(total_price) FROM orders)) AS "?column?"
+    id,
+    (SELECT COUNT(*)
+     FROM orders
+     WHERE user_id = users.id) AS order_count
 FROM
-    orders
-GROUP BY
-    user_id
-ORDER BY
-    CASE
-        WHEN user_id = 3 THEN 1
-        WHEN user_id = 5 THEN 2
-        WHEN user_id = 4 THEN 3
-        WHEN user_id = 2 THEN 4
-        WHEN user_id = 1 THEN 5
-    END;
+    users
+WHERE
+    (SELECT COUNT(*)
+     FROM orders
+     WHERE user_id = users.id) = (
+        SELECT MAX(order_count)
+        FROM (
+            SELECT user_id, COUNT(*) AS order_count
+            FROM orders
+            GROUP BY user_id
+        ) AS subquery
+    );
