@@ -25,8 +25,7 @@ FROM
 результат. Поэтому он и используется с различными агрегатными функциями.
 
 Для таблиц и данных ниже необходимо:
-получить имя пользователя и указание о том является ли их возраст больше общего среднего возраста
-В качестве псевдонима для подзапроса используйте is_more_average_age.
+получить суммарное количество заказов для каждого пользователя
 */
 
 CREATE TABLE users
@@ -36,6 +35,14 @@ CREATE TABLE users
     age  INT
 );
 
+CREATE TABLE orders
+(
+    id          SERIAL PRIMARY KEY,
+    user_id     INT,
+    total_price DECIMAL(10, 2),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
 INSERT INTO users (name, age)
 VALUES ('Alice', 25),
        ('Bob', 30),
@@ -43,7 +50,30 @@ VALUES ('Alice', 25),
        ('David', 40),
        ('Emma', 22);
 
+INSERT INTO orders (user_id, total_price)
+VALUES (1, 100.00),
+       (2, 75.50),
+       (3, 200.25),
+       (4, 150.75),
+       (5, 50.20),
+       (1, 120.00),
+       (2, 90.80),
+       (3, 180.60),
+       (4, 210.40),
+       (4, 175.30),
+       (5, 95.25),
+       (1, 80.30),
+       (2, 65.50),
+       (3, 150.00),
+       (4, 100.75),
+       (5, 70.90);
+
 SELECT
-    name,
-    age > (SELECT AVG(age) FROM users) AS is_more_average_age
-FROM users;
+    u.id,
+    (SELECT COUNT(o.id)
+     FROM orders o
+     WHERE o.user_id = u.id) AS count
+FROM
+    users u
+ORDER BY
+    u.id;
