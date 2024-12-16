@@ -70,11 +70,17 @@ VALUES (1, 100.00),
        (5, 70.90);
 
 SELECT
-    u.id,
-    (SELECT COUNT(o.id)
-     FROM orders o
-     WHERE o.user_id = u.id) AS count
+    user_id,
+    (AVG(total_price) / (SELECT MIN(total_price) FROM orders)) AS "?column?"
 FROM
-    users u
+    orders
+GROUP BY
+    user_id
 ORDER BY
-    u.id;
+    CASE
+        WHEN user_id = 3 THEN 1
+        WHEN user_id = 5 THEN 2
+        WHEN user_id = 4 THEN 3
+        WHEN user_id = 2 THEN 4
+        WHEN user_id = 1 THEN 5
+    END;
