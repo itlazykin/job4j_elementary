@@ -25,8 +25,8 @@ FROM
 результат. Поэтому он и используется с различными агрегатными функциями.
 
 Для таблиц и данных ниже необходимо:
-- получить список пользователей и их общей суммы заказов, отсортированных по сумме заказов по убыванию
-В качестве псевдонима для подзапроса используйте total_order_sum
+- получить средние цены товаров, проданных каждым пользователем
+В качестве псевдонима для подзапроса используйте average_item_price.
 */
 
 CREATE TABLE users
@@ -113,8 +113,14 @@ VALUES (1, 1, 2, 20.00),
 
 SELECT u.id,
     (
-    SELECT SUM(total_price)
-    FROM orders AS o
-    WHERE o.user_id = u.id) AS total_order_sum
-FROM users AS u
-ORDER BY total_order_sum DESC
+      SELECT AVG(oi.price)
+       FROM order_items oi
+       WHERE oi.order_id IN
+        (
+                SELECT o.id
+                FROM orders o
+                WHERE o.user_id = u.id
+        )
+    ) AS average_item_price
+FROM users u;
+
