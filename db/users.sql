@@ -25,8 +25,8 @@ FROM
 результат. Поэтому он и используется с различными агрегатными функциями.
 
 Для таблиц и данных ниже необходимо:
-- получить список товаров и их цен вместе с общим количеством проданных единиц каждого товара
-В качестве псевдонима для подзапроса используйте total_sold.
+- получить список пользователей и их общей суммы заказов, отсортированных по сумме заказов по убыванию
+В качестве псевдонима для подзапроса используйте total_order_sum
 */
 
 CREATE TABLE users
@@ -111,9 +111,10 @@ VALUES (1, 1, 2, 20.00),
        (14, 4, 2, 100.75),
        (15, 5, 1, 70.90);
 
-SELECT p.product_name,p.price,
-	(
-	SELECT SUM(quantity)
-	FROM order_items AS oi
-	WHERE oi.product_id = p.id) AS total_sold
-FROM products AS p
+SELECT u.id,
+    (
+    SELECT SUM(total_price)
+    FROM orders AS o
+    WHERE o.user_id = u.id) AS total_order_sum
+FROM users AS u
+ORDER BY total_order_sum DESC
