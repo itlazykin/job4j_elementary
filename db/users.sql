@@ -44,24 +44,6 @@ CREATE TABLE orders
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE products
-(
-    id           SERIAL PRIMARY KEY,
-    product_name VARCHAR(100),
-    price        DECIMAL(10, 2)
-);
-
-CREATE TABLE order_items
-(
-    id         SERIAL PRIMARY KEY,
-    order_id   INT,
-    product_id INT,
-    quantity   INT,
-    price      DECIMAL(10, 2),
-    FOREIGN KEY (order_id) REFERENCES orders (id),
-    FOREIGN KEY (product_id) REFERENCES products (id)
-);
-
 INSERT INTO users (name, age)
 VALUES ('Alice', 25),
        ('Bob', 30),
@@ -87,36 +69,12 @@ VALUES (1, 100.00),
        (4, 100.75),
        (5, 70.90);
 
-INSERT INTO products (product_name, price)
-VALUES ('Товар 1', 10.00),
-       ('Товар 2', 15.50),
-       ('Товар 3', 20.25),
-       ('Товар 4', 25.75),
-       ('Товар 5', 30.20);
-
-INSERT INTO order_items (order_id, product_id, quantity, price)
-VALUES (1, 1, 2, 20.00),
-       (2, 2, 1, 15.50),
-       (3, 3, 3, 60.75),
-       (4, 4, 2, 51.50),
-       (5, 5, 1, 30.20),
-       (6, 1, 1, 40.00),
-       (7, 2, 4, 40.80),
-       (8, 3, 2, 36.60),
-       (9, 4, 3, 84.30),
-       (10, 5, 1, 45.25),
-       (11, 1, 2, 60.60),
-       (12, 2, 1, 65.50),
-       (13, 3, 3, 150.00),
-       (14, 4, 2, 100.75),
-       (15, 5, 1, 70.90);
-
 SELECT
-    p.id,
+    u.id,
     (
-        SELECT SUM(oi.quantity)
-        FROM order_items oi
-        WHERE oi.product_id = p.id
-    ) AS total_sold
-FROM products p;
+        SELECT COUNT(o.total_price) AS count
+        FROM orders o
+        WHERE o.user_id = u.id
+    )
+FROM users AS u;
 
