@@ -25,9 +25,8 @@ FROM
 результат. Поэтому он и используется с различными агрегатными функциями.
 
 Для таблиц и данных ниже необходимо:
-- получить идентификаторы пользователей с наибольшим числом заказов;
-- в результирущей выборке отразите id пользователя и количество заказов;
-- в качестве псевдонима для подзапроса используйте order_count.
+- получить список товаров и их цен вместе с общим количеством проданных единиц каждого товара
+В качестве псевдонима для подзапроса используйте total_sold.
 */
 
 CREATE TABLE users
@@ -43,6 +42,24 @@ CREATE TABLE orders
     user_id     INT,
     total_price DECIMAL(10, 2),
     FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE products
+(
+    id           SERIAL PRIMARY KEY,
+    product_name VARCHAR(100),
+    price        DECIMAL(10, 2)
+);
+
+CREATE TABLE order_items
+(
+    id         SERIAL PRIMARY KEY,
+    order_id   INT,
+    product_id INT,
+    quantity   INT,
+    price      DECIMAL(10, 2),
+    FOREIGN KEY (order_id) REFERENCES orders (id),
+    FOREIGN KEY (product_id) REFERENCES products (id)
 );
 
 INSERT INTO users (name, age)
@@ -70,21 +87,33 @@ VALUES (1, 100.00),
        (4, 100.75),
        (5, 70.90);
 
-SELECT
-    id,
-    (SELECT COUNT(*)
-     FROM orders
-     WHERE user_id = users.id) AS order_count
-FROM
-    users
-WHERE
-    (SELECT COUNT(*)
-     FROM orders
-     WHERE user_id = users.id) = (
-        SELECT MAX(order_count)
-        FROM (
-            SELECT user_id, COUNT(*) AS order_count
-            FROM orders
-            GROUP BY user_id
-        ) AS subquery
-    );
+INSERT INTO products (product_name, price)
+VALUES ('Товар 1', 10.00),
+       ('Товар 2', 15.50),
+       ('Товар 3', 20.25),
+       ('Товар 4', 25.75),
+       ('Товар 5', 30.20);
+
+INSERT INTO order_items (order_id, product_id, quantity, price)
+VALUES (1, 1, 2, 20.00),
+       (2, 2, 1, 15.50),
+       (3, 3, 3, 60.75),
+       (4, 4, 2, 51.50),
+       (5, 5, 1, 30.20),
+       (6, 1, 1, 40.00),
+       (7, 2, 4, 40.80),
+       (8, 3, 2, 36.60),
+       (9, 4, 3, 84.30),
+       (10, 5, 1, 45.25),
+       (11, 1, 2, 60.60),
+       (12, 2, 1, 65.50),
+       (13, 3, 3, 150.00),
+       (14, 4, 2, 100.75),
+       (15, 5, 1, 70.90);
+
+SELECT p.product_name,p.price,
+	(
+	SELECT SUM(quantity)
+	FROM order_items AS oi
+	WHERE oi.product_id = p.id) AS total_sold
+FROM products AS p
