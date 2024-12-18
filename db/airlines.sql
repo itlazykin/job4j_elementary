@@ -1,106 +1,89 @@
 /*
-GROUP BY позволяет разделить данные, которые возвращены с помощью SELECT на группы. При этом для каждой из групп можно
-будет использовать агрегатные функции, например COUNT() для подсчета предметов в каждой из групп. Вместе с GROUP BY
-можно использовать HAVING. Этот оператор позволяет указать какие группы будут включены в выходной результат. Т.е.
-просто выполняют фильтрацию групп. Но очень важно усвоить разницу между WHERE и HAVING - в отличие от WHERE оператор
-HAVING будет выполняться после группировки данных. Т.е. WHERE фильтрует строки, а HAVING - группы после их группировки.
-В одном запросе одновременно могут использоваться и WHERE и HAVING. Главное не забывать про порядок выполнения этих
-операторов. Синтаксис имеет следующий вид:
+Подзапрос - это запрос, который помещен в другой запрос. Также можно встретить такое определение как внутренний запрос
+или вложенный запрос. Подзапрос может быть полезен для извлечения данных, которые далее будут использованы основным
+запросом в качестве условия при дальнейшей выборке данных. При этом подзапрос может быть размещен в SELECT. Обычно, это
+используется когда мы хотим получить вычисление с агрегатной функцией. При этом агрегатная функция не будет применяться
+к основному запросу. Основной синтаксис выглядит следующим образом:
 
- SELECT
-     столбец_1,
-     столбец_2,
-     ...,
-     aggregate_function(столбец_3)
- FROM
-     название_таблицы
- WHERE
-     условие_выборки
- GROUP BY
-     столбец_1,
-     столбец_2,
-     ...
- HAVING
-     условие_фильтрации_групп;
+SELECT
+    столбец_1,
+    столбец_2,
+    ...,
+    (
+        SELECT
+            агрегатная функция (столбец_2)
+        FROM
+            название_таблицы
+        WHERE
+            условие_выборки
+    )
+FROM
+    название_таблицы;
 
- Необходимо учесть - любой столбец, который указан в SELECT
- (столбец, который хранит результат вычисления агрегатных функций, не считается), должен быть указан после GROUP BY.
+Подзапросу можно присваивать псевдоним. Его можно использовать для ссылки на этот подзапрос или на любое поле в нем.
+Основной принцип для размещения подзапроса в SELECT заключается в том, что подзапрос должен возвращать ровно один
+результат. Поэтому он и используется с различными агрегатными функциями.
 
-В задании необходимо:
-определите авиакомпанию с наибольшим количеством самолетов
-необходимо вывести название авиакомпании и общее число самолетов.
-Для решения понадобится:
-JOIN для соединения таблиц;
-GROUP BY по полю name таблицы airlines;
-ORDER BY по полю id таблицы airplanes по убыванию;
-LIMIT для ограничения выборки до одной записи.
+Для таблиц и данных ниже необходимо:
+- получить список всех авиакомпаний и количество самолетов, которые они эксплуатируют
+В качестве псевдонима для подзапроса используйте airplane_count
 */
 
 CREATE TABLE airlines
 (
-    id           INT PRIMARY KEY,
-    name         VARCHAR(255),
-    country      VARCHAR(255),
-    headquarters VARCHAR(255)
+    id      SERIAL PRIMARY KEY,
+    name    VARCHAR(100),
+    country VARCHAR(100)
 );
 
 CREATE TABLE airplanes
 (
-    id               INT PRIMARY KEY,
-    model            VARCHAR(255),
-    manufacturer     VARCHAR(255),
-    seating_capacity INT
+    id               SERIAL PRIMARY KEY,
+    model            VARCHAR(100),
+    manufacturer     VARCHAR(100),
+    seating_capacity INTEGER,
+    airline_id       INTEGER REFERENCES airlines (id)
 );
 
-CREATE TABLE flights
-(
-    id              INT PRIMARY KEY,
-    airline_id      INT REFERENCES airlines (id),
-    airplane_id     INT REFERENCES airplanes (id),
-    departure_date  DATE,
-    flight_duration DECIMAL(5, 2)
-);
+INSERT INTO airlines (name, country)
+VALUES ('American Airlines', 'United States'),
+       ('Delta Air Lines', 'United States'),
+       ('United Airlines', 'United States'),
+       ('British Airways', 'United Kingdom'),
+       ('Lufthansa', 'Germany'),
+       ('Air France', 'France'),
+       ('Emirates', 'United Arab Emirates');
 
-INSERT INTO airlines (id, name, country, headquarters)
-VALUES (1, 'Lufthansa', 'Germany', 'Cologne'),
-       (2, 'Delta Air Lines', 'USA', 'Atlanta'),
-       (3, 'Emirates', 'UAE', 'Dubai'),
-       (4, 'Air France', 'France', 'Paris'),
-       (5, 'Singapore Airlines', 'Singapore', 'Singapore');
+INSERT INTO airplanes (model, manufacturer, seating_capacity, airline_id)
+VALUES ('Boeing 737', 'Boeing', 150, 1),
+       ('Boeing 777', 'Boeing', 350, 1),
+       ('Airbus A320', 'Airbus', 180, 2),
+       ('Airbus A330', 'Airbus', 300, 2),
+       ('Boeing 787', 'Boeing', 250, 3),
+       ('Airbus A380', 'Airbus', 500, 4),
+       ('Boeing 747', 'Boeing', 400, 4),
+       ('Airbus A350', 'Airbus', 325, 5),
+       ('Airbus A320', 'Airbus', 180, 6),
+       ('Airbus A340', 'Airbus', 300, 6),
+       ('Boeing 777', 'Boeing', 350, 7),
+       ('Boeing 787', 'Boeing', 250, 7),
+       ('Boeing 737', 'Boeing', 150, 7),
+       ('Airbus A380', 'Airbus', 500, 7),
+       ('Boeing 747', 'Boeing', 400, 7),
+       ('Boeing 737', 'Boeing', 150, 7),
+       ('Boeing 777', 'Boeing', 350, 7),
+       ('Airbus A320', 'Airbus', 180, 7),
+       ('Boeing 787', 'Boeing', 250, 7),
+       ('Airbus A330', 'Airbus', 300, 7),
+       ('Boeing 747', 'Boeing', 400, 7),
+       ('Airbus A380', 'Airbus', 500, 7);
 
-INSERT INTO airplanes (id, model, manufacturer, seating_capacity)
-VALUES (1, '737', 'Boeing', 150),
-       (2, 'A320', 'Airbus', 170),
-       (3, '777', 'Boeing', 300),
-       (4, 'A380', 'Airbus', 555),
-       (5, '747', 'Boeing', 416),
-       (6, 'E190', 'Embraer', 100),
-       (7, 'A350', 'Airbus', 440),
-       (8, 'CRJ900', 'Bombardier', 90),
-       (9, 'MD-11', 'McDonnell Douglas', 290),
-       (10, '72', 'ATR', 70);
+SELECT al.name,
+    (
+    SELECT COUNT(model)
+    FROM airplanes AS ap
+    WHERE ap.airline_id = al.id
+    ) AS airplane_count
+FROM airlines AS al
 
-INSERT INTO flights (id, airline_id, airplane_id, departure_date, flight_duration)
-VALUES (1, 1, 1, '2023-01-01', 2.5),
-       (2, 2, 3, '2023-01-02', 3.0),
-       (3, 3, 4, '2023-01-03', 8.5),
-       (4, 4, 2, '2023-01-04', 2.0),
-       (5, 5, 5, '2023-01-05', 7.5),
-       (6, 1, 6, '2023-01-06', 1.5),
-       (7, 2, 7, '2023-01-07', 4.0),
-       (8, 3, 8, '2023-01-08', 6.5),
-       (9, 4, 9, '2023-01-09', 5.0),
-       (10, 5, 10, '2023-01-10', 3.5),
-       (11, 1, 1, '2023-01-11', 2.0),
-       (12, 2, 2, '2023-01-12', 1.0),
-       (13, 3, 3, '2023-01-13', 4.5),
-       (14, 4, 4, '2023-01-14', 2.5),
-       (15, 5, 5, '2023-01-15', 6.0),
-       (16, 3, 3, '2023-03-16', 4.5);
 
-SELECT al.name, COUNT(airplane_id) AS count
-FROM flights f
-JOIN airlines al ON f.airline_id = al.id
-GROUP BY al.name
-ORDER BY count DESC
-Limit 1
