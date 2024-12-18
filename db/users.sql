@@ -25,8 +25,8 @@ FROM
 результат. Поэтому он и используется с различными агрегатными функциями.
 
 Для таблиц и данных ниже необходимо:
-- получить средние цены товаров, проданных каждым пользователем
-В качестве псевдонима для подзапроса используйте average_item_price.
+- получить общее количество проданных единиц каждого товара
+В качестве псевдонима для подзапроса используйте total_sold.
 */
 
 CREATE TABLE users
@@ -111,16 +111,12 @@ VALUES (1, 1, 2, 20.00),
        (14, 4, 2, 100.75),
        (15, 5, 1, 70.90);
 
-SELECT u.id,
+SELECT
+    p.id,
     (
-      SELECT AVG(oi.price)
-       FROM order_items oi
-       WHERE oi.order_id IN
-        (
-                SELECT o.id
-                FROM orders o
-                WHERE o.user_id = u.id
-        )
-    ) AS average_item_price
-FROM users u;
+        SELECT SUM(oi.quantity)
+        FROM order_items oi
+        WHERE oi.product_id = p.id
+    ) AS total_sold
+FROM products p;
 
