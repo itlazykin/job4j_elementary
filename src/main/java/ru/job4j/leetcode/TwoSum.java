@@ -21,9 +21,4 @@ public class TwoSum {
         }
         return new int[0];
     }
-
-    public static void main(String[] args) {
-        int[] numbers = {2, 7, 11, 15};
-        System.out.println(Arrays.toString(twoSum(numbers, 9)));
-    }
 }
