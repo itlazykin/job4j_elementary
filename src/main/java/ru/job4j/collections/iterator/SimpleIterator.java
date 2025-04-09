@@ -1,6 +1,8 @@
 package ru.job4j.collections.iterator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class SimpleIterator<T> implements Iterator<T> {
     private final T[] object;
@@ -27,5 +29,6 @@ public class SimpleIterator<T> implements Iterator<T> {
             Integer i = simpleIterator.next();
             System.out.println(i);
         }
+        List<String> a = new ArrayList<>();
     }
 }
