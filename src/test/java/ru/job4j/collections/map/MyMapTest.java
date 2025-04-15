@@ -3,10 +3,7 @@ package ru.job4j.collections.map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,23 +87,26 @@ class MyMapTest {
         map.put("one", 1);
         map.put("two", 2);
         map.put("three", 3);
-        Iterator<String> iterator = map.iterator();
+        Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
         assertTrue(iterator.hasNext());
-        String key1 = iterator.next();
+        Map.Entry<String, Integer> entry1 = iterator.next();
         assertTrue(iterator.hasNext());
-        String key2 = iterator.next();
+        Map.Entry<String, Integer> entry2 = iterator.next();
         assertTrue(iterator.hasNext());
-        String key3 = iterator.next();
+        Map.Entry<String, Integer> entry3 = iterator.next();
         assertFalse(iterator.hasNext());
         assertEquals(3, map.size());
-        assertTrue(containsKey(key1));
-        assertTrue(containsKey(key2));
-        assertTrue(containsKey(key3));
+        assertTrue(containsKey(entry1.getKey()));
+        assertTrue(containsKey(entry2.getKey()));
+        assertTrue(containsKey(entry3.getKey()));
+        assertEquals(3, entry1.getValue());
+        assertEquals(2, entry2.getValue());
+        assertEquals(1, entry3.getValue());
     }
 
     @Test
     void whenIteratorIsEmptyThenNoElementReturned() {
-        Iterator<String> iterator = map.iterator();
+        Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
         assertFalse(iterator.hasNext());
         assertThrows(NoSuchElementException.class, iterator::next);
     }
@@ -114,7 +114,7 @@ class MyMapTest {
     @Test
     void whenMapIsModifiedDuringIterationThenThrowConcurrentModificationException() {
         map.put("one", 1);
-        Iterator<String> iterator = map.iterator();
+        Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
         map.put("two", 2);
         assertThrows(ConcurrentModificationException.class, iterator::hasNext);
         assertThrows(ConcurrentModificationException.class, iterator::next);

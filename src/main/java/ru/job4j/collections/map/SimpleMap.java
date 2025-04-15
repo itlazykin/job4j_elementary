@@ -1,6 +1,9 @@
 package ru.job4j.collections.map;
 
-public interface SimpleMap<K, V> extends Iterable<K> {
+import java.util.Map;
+import java.util.Set;
+
+public interface SimpleMap<K, V> {
 
     V get(K key);
 
@@ -9,4 +12,6 @@ public interface SimpleMap<K, V> extends Iterable<K> {
     boolean remove(K key);
 
     int size();
+
+    Set<Map.Entry<K, V>> entrySet();
 }

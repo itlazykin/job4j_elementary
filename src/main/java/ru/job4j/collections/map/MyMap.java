@@ -1,9 +1,6 @@
 package ru.job4j.collections.map;
 
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class MyMap<K, V> implements SimpleMap<K, V> {
 
@@ -70,41 +67,52 @@ public class MyMap<K, V> implements SimpleMap<K, V> {
     }
 
     @Override
-    public Iterator<K> iterator() {
-        return new Iterator<>() {
-            private int currentBucket = 0;
-            private MapEntry<K, V> currentEntry = null;
-            private int expectedModCount = modCount;
-
-            private void advanceToNextEntry() {
-                while (currentBucket < table.length && currentEntry == null) {
-                    currentEntry = table[currentBucket++];
-                }
+    public Set<Map.Entry<K, V>> entrySet() {
+        return new AbstractSet<Map.Entry<K, V>>() {
+            @Override
+            public Iterator<Map.Entry<K, V>> iterator() {
+                return new EntryIterator();
             }
 
             @Override
-            public boolean hasNext() {
-                if (modCount != expectedModCount) {
-                    throw new ConcurrentModificationException();
-                }
-                if (currentEntry == null) {
-                    advanceToNextEntry();
-                }
-                return currentEntry != null;
-            }
-
-            @Override
-            public K next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-
-                K key = currentEntry.key;
-                currentEntry = currentEntry.next;
-                advanceToNextEntry();
-                return key;
+            public int size() {
+                return count;
             }
         };
+    }
+
+    private class EntryIterator implements Iterator<Map.Entry<K, V>> {
+        private int currentBucket = 0;
+        private MapEntry<K, V> currentEntry = null;
+        private int expectedModCount = modCount;
+
+        private void advanceToNextEntry() {
+            while (currentBucket < table.length && currentEntry == null) {
+                currentEntry = table[currentBucket++];
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (modCount != expectedModCount) {
+                throw new ConcurrentModificationException();
+            }
+            if (currentEntry == null) {
+                advanceToNextEntry();
+            }
+            return currentEntry != null;
+        }
+
+        @Override
+        public Map.Entry<K, V> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            Map.Entry<K, V> entry = currentEntry;
+            currentEntry = currentEntry.next;
+            advanceToNextEntry();
+            return entry;
+        }
     }
 
     private int hash(int hashCode) {
@@ -136,15 +144,31 @@ public class MyMap<K, V> implements SimpleMap<K, V> {
         capacity = newCapacity;
     }
 
-    private static class MapEntry<K, V> {
-        K key;
+    private static class MapEntry<K, V> implements Map.Entry<K, V> {
+        final K key;
         V value;
         MapEntry<K, V> next;
 
         public MapEntry(K key, V value) {
             this.key = key;
             this.value = value;
-            this.next = null;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(V value) {
+            V oldValue = this.value;
+            this.value = value;
+            return oldValue;
         }
     }
 }
