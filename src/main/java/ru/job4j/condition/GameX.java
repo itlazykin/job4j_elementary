@@ -20,8 +20,4 @@ public class GameX {
         }
         return -1;
     }
-
-    public static void main(String[] args) {
-        System.out.println(checkGame(10, 500, 15));
-    }
 }
